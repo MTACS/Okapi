@@ -1,4 +1,3 @@
-#include <CSColorPicker/CSColorPicker.h>
 #include <stdlib.h>
 #import <UIKit/UIKit.h>
 #import <headers/MobileGestalt.h>
@@ -181,62 +180,6 @@ BOOL noSeparators;
 }
 
 %end
-
-
-
-// Package Info View
-
-/*
-
-%hook ZBPackageInfoView
-
-- (void)layoutSubviews {
-
-	%orig;
-
-	UILabel *newPackageName = MSHookIvar<UILabel *>(self, "_packageName");
-
-	newPackageName.text = @" ";
-
-}
-
-%end
-
-// Repos
-
- %hook ZBRepoTableViewCell
-
-- (void)layoutSubviews {
-
-	%orig;
-
-	UILabel *newRepoLabel = MSHookIvar<UILabel *>(self, "_repoLabel");
-
-	CGRect newRepoLabelFrame = newRepoLabel.frame;
-
-	newRepoLabelFrame.origin.x = 12;
-
-	newRepoLabel.frame = newRepoLabelFrame;
-
-	UILabel *newUrlLabel = MSHookIvar<UILabel *>(self, "_urlLabel");
-
-	CGRect newUrlLabelFrame = newUrlLabel.frame;
-
-	newUrlLabelFrame.origin.x = 12;
-
-	newUrlLabel.frame = newUrlLabelFrame;
-
-	UIImageView *repoImage = MSHookIvar<UIImageView *>(self, "_iconImageView");
-
-	NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
-
-	// UIImageView *cellImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@".png"]]];
-
-	[repoImage setImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"Networking" ofType:@"png"]]];
-
-}
-
-%end */
 
 // Homepage
 
