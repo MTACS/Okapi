@@ -101,7 +101,7 @@ BOOL noSeparators;
 
 %hook ZBPackageTableViewCell
 
-- (void)layoutSubviews {
+- (void)layoutSubviews { // Sets package cells
 
 	%orig;
 
@@ -117,7 +117,7 @@ BOOL noSeparators;
 
 }
 
-- (id)iconImageView {
+/* - (id)iconImageView {
 
 	%orig;
 
@@ -133,7 +133,7 @@ BOOL noSeparators;
 
 	return %orig;
 
-}
+} */
 
 %end
 
