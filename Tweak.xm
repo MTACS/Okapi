@@ -17,6 +17,9 @@ BOOL hideTabBarLabels;
 BOOL centerIcons;
 BOOL tintBadges;
 BOOL noSeparators;
+BOOL hidePaidIcon;
+BOOL hideInstalledIcon;
+BOOL hidePackageIcons;
 
 // Definitions
 
@@ -105,35 +108,43 @@ BOOL noSeparators;
 
 	%orig;
 
-	if (enabled) {
-
-		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
+	if (enabled && hidePackageIcons) {
 
 		UIImageView *newImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
 
-		[newImageView setImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]]];
+		newImageView.hidden = YES;
+
+		// Remove cell icon
+
+		CGPoint newContentCenter;
+
+		newContentCenter.x = 130;
+
+		newContentCenter.y = 29;
+
+		UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
+
+		newContentView.center = newContentCenter;
+
+	}
+
+	if (enabled && hideInstalledIcon) {
+
+		UIImageView *installed = MSHookIvar<UIImageView *>(self, "_isInstalledImageView");
+
+		installed.hidden = YES;
+
+	}
+
+	if (enabled && hidePaidIcon) {
+
+		UIImageView *paid = MSHookIvar<UIImageView *>(self, "_isPaidImageView");
+
+		paid.hidden = YES;
 
 	}
 
 }
-
-/* - (id)iconImageView {
-
-	%orig;
-
-	if (enabled) {
-
-		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
-
-		UIImageView *cellImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@".png"]]];
-
-		return cellImage;
-
-	}
-
-	return %orig;
-
-} */
 
 %end
 
@@ -272,6 +283,12 @@ BOOL noSeparators;
 	[preferences registerBool:&tintBadges default:YES forKey:@"tintBadges"];
 
 	[preferences registerBool:&noSeparators default:YES forKey:@"tintBadges"];
+
+	[preferences registerBool:&hidePaidIcon default:YES forKey:@"hidePaidIcon"];
+
+	[preferences registerBool:&hideInstalledIcon default:YES forKey:@"hideInstalledIcon"];
+
+	[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
 
 	%init(Tweak);
 
