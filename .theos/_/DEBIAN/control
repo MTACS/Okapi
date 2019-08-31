@@ -2,9 +2,12 @@ Package: com.mtac.okapi
 Name: Okapi
 Depends: mobilesubstrate
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
+Description: Enhance Zebra
 Maintainer: MTAC
 Author: MTAC
+Depiction: https://repo.mtac.app/depiction/web/com.mtac.okapi.html
+Moderndepiction: https://repo.mtac.app/depiction/native/com.mtac.okapi.json
+Sileodepiction: https://repo.mtac.app/depiction/native/com.mtac.okapi.json
 Section: Tweaks
-Version: 0.0.1-20+debug
-Installed-Size: 628
+Version: 1.0.0-beta-4
+Installed-Size: 568

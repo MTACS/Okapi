@@ -222,6 +222,28 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>Features &amp; Bugs</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
+			<key>label</key>
+			<string>Request a feature</string>
+			<key>url</key>
+			<string>https://forms.gle/idAw7Jjy713p1J8eA</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
+			<key>label</key>
+			<string>Report a bug</string>
+			<key>url</key>
+			<string>https://forms.gle/qD9EDos6KJi1kQwEA</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>More</string>
 		</dict>
 		<dict>
@@ -246,6 +268,14 @@
 			</dict>
 			<key>label</key>
 			<string>Reset settings</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerAlignment</key>
+			<string>1</string>
+			<key>footerText</key>
+			<string>2019 © MTAC</string>
 		</dict>
 	</array>
 	<key>title</key>
