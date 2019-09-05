@@ -20,6 +20,7 @@ BOOL noSeparators;
 BOOL hidePaidIcon;
 BOOL hideInstalledIcon;
 BOOL hidePackageIcons;
+BOOL homecells;
 
 // Definitions
 
@@ -95,7 +96,11 @@ BOOL hidePackageIcons;
 @end
 
 @interface ZBSearchViewController : UITableViewController
-@property(retain, nonatomic) UISearchController *searchController;
+@property (retain, nonatomic) UISearchController *searchController;
+@end
+
+@interface ZBHomeTableViewController : UITableViewController
+@property (retain, nonatomic) UILabel *udidLabel;
 @end
 
 // Package Cells
@@ -200,13 +205,17 @@ BOOL hidePackageIcons;
 
 	%orig;
 
-	UILabel *newTextLabel = MSHookIvar<UILabel *>(self, "_textLabel");
+	if (enabled && homecells) {
 
-	CGRect newTextLabelFrame = newTextLabel.frame;
+		UILabel *newTextLabel = MSHookIvar<UILabel *>(self, "_textLabel");
 
-	newTextLabelFrame.origin.x = 12;
+		CGRect newTextLabelFrame = newTextLabel.frame;
 
-	newTextLabel.frame = newTextLabelFrame;
+		newTextLabelFrame.origin.x = 12;
+
+		newTextLabel.frame = newTextLabelFrame;
+
+	}
 
 }
 
@@ -214,7 +223,13 @@ BOOL hidePackageIcons;
 
 	%orig;
 
-	return NULL;
+	if (enabled && homecells) {
+
+		return NULL;
+
+	}
+
+	return %orig;
 
 }
 
@@ -268,6 +283,28 @@ BOOL hidePackageIcons;
 	
 %end
 
+%hook ZBHomeTableViewController
+
+- (void)viewDidLoad {
+
+	%orig;
+
+	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
+
+	// newLabel.hidden = YES;
+
+	/* NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
+
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.2-beta"]];
+
+	UILabel *newUDIDLabel = MSHookIvar<UILabel *>(self, "_udidLabel"); */
+
+	newLabel.text = @"TEST";
+
+}
+
+%end
+
 %end
 
 %ctor {
@@ -289,6 +326,8 @@ BOOL hidePackageIcons;
 	[preferences registerBool:&hideInstalledIcon default:YES forKey:@"hideInstalledIcon"];
 
 	[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
+
+	[preferences registerBool:&homecells default:YES forKey:@"homecells"];
 
 	%init(Tweak);
 

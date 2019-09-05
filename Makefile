@@ -1,8 +1,8 @@
 # export SYSROOT = $(THEOS)/sdks/iPhoneOS11.2.sdk
 
-THEOS_DEVICE_IP = 192.168.1.12
+THEOS_DEVICE_IP = 192.168.1.22
 
-ARCHS = arm64
+ARCHS = arm64 arm64e
 
 DEBUG = 0
 
