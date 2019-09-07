@@ -1,4 +1,5 @@
 #include "Preferences.h"
+#import <AudioToolbox/AudioServices.h>
 
 @implementation PreferencesListController
 @synthesize killButton;
@@ -143,6 +144,8 @@
 }
 
 - (void)killZebra {
+
+    AudioServicesPlaySystemSound(1519);
 
 	pid_t pid;
     const char* args[] = {"killall", "Zebra", NULL};

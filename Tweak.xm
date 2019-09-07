@@ -305,6 +305,56 @@ BOOL homecells;
 
 %end
 
+%hook LNPopupBar
+
+- (void)layoutSubviews {
+
+	%orig;
+
+	/* if (enabled) {
+
+		UILabel *newSubtitle = MSHookIvar<UILabel *>(self, "_subtitleLabel");
+
+		newSubtitle.hidden = YES;
+
+		UILabel *newTitle = MSHookIvar<UILabel *>(self, "_titleLabel");
+
+		// newTitle.hidden = YES;
+
+		NSString *origString = newTitle.text;
+
+		NSString *numberString;
+
+		NSScanner *scanner = [NSScanner scannerWithString:origString];
+
+		NSCharacterSet *numbers = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+
+		[scanner scanUpToCharactersFromSet:numbers intoString:NULL];
+
+		[scanner scanCharactersFromSet:numbers intoString:&numberString];
+
+		int number = [numberString integerValue];
+
+		NSLog(@"%d", number);
+
+		// newTitle.text = [NSString stringWithFormat:@"%d", number];
+
+		UIView *queueView = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 50, 50)];
+
+		queueView.layer.cornerRadius = 25;
+
+		queueView.layer.masksToBounds = YES;
+
+		queueView.backgroundColor = [UIColor tintColor];
+
+		[self addSubview:queueView];
+		
+	} */
+
+}
+
+%end
+
 %end
 
 %ctor {

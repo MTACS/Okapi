@@ -40,7 +40,7 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>label</key>
-			<string>Hide home page Icons</string>
+			<string>Hide home page icons</string>
 			<key>key</key>
 			<string>homecells</string>
 			<key>alternateColors</key>
