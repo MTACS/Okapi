@@ -293,13 +293,13 @@ BOOL homecells;
 
 	// newLabel.hidden = YES;
 
-	/* NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
+	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
 	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.2-beta"]];
 
-	UILabel *newUDIDLabel = MSHookIvar<UILabel *>(self, "_udidLabel"); */
+	newLabel.numberOfLines = 2;
 
-	newLabel.text = @"TEST";
+	newLabel.text = uniqueid;
 
 }
 

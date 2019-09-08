@@ -78,7 +78,7 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>label</key>
-			<string>Center Icons</string>
+			<string>Center icons</string>
 			<key>key</key>
 			<string>centerIcons</string>
 			<key>alternateColors</key>
