@@ -21,6 +21,7 @@ BOOL hidePaidIcon;
 BOOL hideInstalledIcon;
 BOOL hidePackageIcons;
 BOOL homecells;
+BOOL redesignedQueue;
 
 // Definitions
 
@@ -34,6 +35,7 @@ BOOL homecells;
     UILabel *_queueStatusLabel;
 }
 @property (nonatomic, assign, readwrite) CGRect frame;
+- (NSString *)deviceModelString;
 @end
 
 @interface UITabBarButtonLabel : UILabel
@@ -103,6 +105,17 @@ BOOL homecells;
 @property (retain, nonatomic) UILabel *udidLabel;
 @end
 
+@interface LNPopupBar 
+
+- (void)setImage:(UIImage *)image;
+
+@end
+
+@interface ZBQueue
++ (id)sharedInstance;
+- (void)clearQueue;
+@end
+
 // Package Cells
 
 %group Tweak
@@ -123,9 +136,23 @@ BOOL homecells;
 
 		CGPoint newContentCenter;
 
-		newContentCenter.x = 130;
+		if ([[self deviceModelString] containsString:@"iPhone11,4"] || [[self deviceModelString] containsString:@"iPhone11,6"]) {
 
-		newContentCenter.y = 29;
+			newContentCenter.x = 150;
+
+			newContentCenter.y = 29;
+
+		} else if ([[self deviceModelString] containsString:@"iPad"]) {
+
+			newContentCenter.x = 328;
+		
+		} else {
+
+			newContentCenter.x = 138;
+
+			newContentCenter.y = 29;
+
+		}
 
 		UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
 
@@ -148,6 +175,18 @@ BOOL homecells;
 		paid.hidden = YES;
 
 	}
+
+}
+
+%new
+
+- (NSString *)deviceModelString {
+
+	struct utsname systemInfo;
+
+	uname(&systemInfo);
+
+	return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 
 }
 
@@ -291,11 +330,9 @@ BOOL homecells;
 
 	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
 
-	// newLabel.hidden = YES;
-
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.2-beta"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.4"]];
 
 	newLabel.numberOfLines = 2;
 
@@ -311,49 +348,51 @@ BOOL homecells;
 
 	%orig;
 
-	/* if (enabled) {
+	if (enabled && redesignedQueue) {
 
-		UILabel *newSubtitle = MSHookIvar<UILabel *>(self, "_subtitleLabel");
+		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/PreferenceBundles/okapiprefs.bundle"];
 
-		newSubtitle.hidden = YES;
+	UILabel *newSubtitle = MSHookIvar<UILabel *>(self, "_subtitleLabel");
 
-		UILabel *newTitle = MSHookIvar<UILabel *>(self, "_titleLabel");
+	newSubtitle.hidden = YES;
 
-		// newTitle.hidden = YES;
+	UILabel *newTitle = MSHookIvar<UILabel *>(self, "_titleLabel");
 
-		NSString *origString = newTitle.text;
+	CGPoint newCenter = newTitle.center;
 
-		NSString *numberString;
+	newCenter.y = 33;
 
-		NSScanner *scanner = [NSScanner scannerWithString:origString];
+	newTitle.center = newCenter;
 
-		NSCharacterSet *numbers = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+	UIImageView *dliv = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"arrow" ofType:@"png"]]];
 
-		[scanner scanUpToCharactersFromSet:numbers intoString:NULL];
+	dliv.image = [dliv.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
-		[scanner scanCharactersFromSet:numbers intoString:&numberString];
+	[dliv setTintColor:[UIColor tintColor]];
 
-		int number = [numberString integerValue];
+	[self setImage:dliv.image];
 
-		NSLog(@"%d", number);
-
-		// newTitle.text = [NSString stringWithFormat:@"%d", number];
-
-		UIView *queueView = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 50, 50)];
-
-		queueView.layer.cornerRadius = 25;
-
-		queueView.layer.masksToBounds = YES;
-
-		queueView.backgroundColor = [UIColor tintColor];
-
-		[self addSubview:queueView];
-		
-	} */
+	}
 
 }
 
 %end
+
+/* %hook _LNPopupToolbar
+
+- (void)layoutSubviews {
+
+	%orig;
+
+	UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:[%c(ZBQueue) sharedInstance] action:@selector(clearQueue)];
+
+	swipe.direction = UISwipeGestureRecognizerDirectionDown;
+
+	[self addGestureRecognizer:swipe];
+
+}
+
+%end */
 
 %end
 
@@ -378,6 +417,8 @@ BOOL homecells;
 	[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
 
 	[preferences registerBool:&homecells default:YES forKey:@"homecells"];
+
+	[preferences registerBool:&redesignedQueue default:YES forKey:@"redesignedQueue"];
 
 	%init(Tweak);
 

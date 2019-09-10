@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+        <dict>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
+			<key>label</key>
+			<string>Request a feature</string>
+			<key>url</key>
+			<string>https://forms.gle/idAw7Jjy713p1J8eA</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBLinkTableCell</string>
+			<key>label</key>
+			<string>Report a bug</string>
+			<key>url</key>
+			<string>https://forms.gle/qD9EDos6KJi1kQwEA</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>More</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>resetPrefs:</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>HBTintedTableCell</string>
+			<key>isDestructive</key>
+			<true />
+			<key>confirmation</key>
+			<dict>
+				<key>prompt</key>
+				<string>Are you sure you want to reset preferences?</string>
+				<key>title</key>
+				<string>OK</string>
+				<key>okTitle</key>
+				<string>OK</string>
+				<key>cancelTitle</key>
+				<string>CANCEL</string>
+			</dict>
+			<key>label</key>
+			<string>Reset settings</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerAlignment</key>
+			<string>1</string>
+			<key>footerText</key>
+			<string>2019 © MTAC</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Okapi</string>
+</dict>
+</plist>

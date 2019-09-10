@@ -17,6 +17,14 @@
 @property (nonatomic, retain) UIImageView *iconView;
 @end
 
+@interface MoreSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
 // Thanks Nepeta
 
 @interface OkapiAppearanceSettings: HBAppearanceSettings
