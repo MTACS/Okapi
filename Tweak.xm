@@ -316,7 +316,11 @@ BOOL redesignedQueue;
 
 	%orig;
 
-	self.backgroundColor = [UIColor clearColor];
+	if (enabled && noSeparators) {
+
+		self.backgroundColor = [UIColor clearColor];
+
+	}
 
 }
 	
@@ -332,7 +336,7 @@ BOOL redesignedQueue;
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.4"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.5"]];
 
 	newLabel.numberOfLines = 2;
 

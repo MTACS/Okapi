@@ -1,7 +1,7 @@
 Package: com.mtac.okapi
 Name: Okapi
 Depends: mobilesubstrate
-Version: 1.0.4
+Version: 1.0.5
 Architecture: iphoneos-arm
 Description: Enhance your Zebra experience
 Maintainer: MTAC
