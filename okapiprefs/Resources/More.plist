@@ -4,6 +4,12 @@
 <dict>
 	<key>items</key>
 	<array>
+    <dict>
+		<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>More</string>
+		</dict>
         <dict>
 			<key>cellClass</key>
 			<string>HBLinkTableCell</string>
@@ -20,11 +26,33 @@
 			<key>url</key>
 			<string>https://forms.gle/qD9EDos6KJi1kQwEA</string>
 		</dict>
-		<dict>
-			<key>cell</key>
+        <dict>
+            <key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>More</string>
+			<string>Credits</string>
+		</dict>
+        <dict>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>label</key>
+			<string>sdemx</string>
+			<key>user</key>
+			<string>sdemx0</string>
+		</dict>
+        <dict>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>label</key>
+			<string>2Klasic</string>
+			<key>user</key>
+			<string>2Klasic</string>
+		</dict>
+        <dict>
+            <key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string></string>
 		</dict>
 		<dict>
 			<key>action</key>

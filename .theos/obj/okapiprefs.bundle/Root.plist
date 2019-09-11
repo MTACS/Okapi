@@ -278,7 +278,7 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>label</key>
-			<string>TEST</string>
+			<string>More Settings</string>
 		</dict>
 		<dict>
 			<key>cell</key>

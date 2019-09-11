@@ -352,47 +352,31 @@ BOOL redesignedQueue;
 
 		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/PreferenceBundles/okapiprefs.bundle"];
 
-	UILabel *newSubtitle = MSHookIvar<UILabel *>(self, "_subtitleLabel");
+		UILabel *newSubtitle = MSHookIvar<UILabel *>(self, "_subtitleLabel");
 
-	newSubtitle.hidden = YES;
+		newSubtitle.hidden = YES;
 
-	UILabel *newTitle = MSHookIvar<UILabel *>(self, "_titleLabel");
+		UILabel *newTitle = MSHookIvar<UILabel *>(self, "_titleLabel");
 
-	CGPoint newCenter = newTitle.center;
+		CGPoint newCenter = newTitle.center;
 
-	newCenter.y = 33;
+		newCenter.y = 33;
 
-	newTitle.center = newCenter;
+		newTitle.center = newCenter;
 
-	UIImageView *dliv = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"arrow" ofType:@"png"]]];
+		UIImageView *dliv = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"arrow" ofType:@"png"]]];
 
-	dliv.image = [dliv.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		dliv.image = [dliv.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
-	[dliv setTintColor:[UIColor tintColor]];
+		[dliv setTintColor:[UIColor tintColor]];
 
-	[self setImage:dliv.image];
+		[self setImage:dliv.image];
 
 	}
 
 }
 
 %end
-
-/* %hook _LNPopupToolbar
-
-- (void)layoutSubviews {
-
-	%orig;
-
-	UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:[%c(ZBQueue) sharedInstance] action:@selector(clearQueue)];
-
-	swipe.direction = UISwipeGestureRecognizerDirectionDown;
-
-	[self addGestureRecognizer:swipe];
-
-}
-
-%end */
 
 %end
 
