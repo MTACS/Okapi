@@ -136,7 +136,13 @@ BOOL redesignedQueue;
 
 		CGPoint newContentCenter;
 
-		if ([[self deviceModelString] containsString:@"iPhone11,4"] || [[self deviceModelString] containsString:@"iPhone11,6"]) {
+		if ([[self deviceModelString] containsString:@"iPhone10,6"] || [[self deviceModelString] containsString:@"iPhone10,3"]) {
+
+			newContentCenter.x = 120;
+
+			newContentCenter.y = 29;
+
+		} else if ([[self deviceModelString] containsString:@"iPhone11,4"] || [[self deviceModelString] containsString:@"iPhone11,6"]) {
 
 			newContentCenter.x = 150;
 
