@@ -9,6 +9,7 @@
   /Users/daf/Documents/Tweaks/okapi/headers/UIColor-GlobalColors.h \
   /Users/daf/Documents/Tweaks/okapi/headers/UIView+draggable.h \
   /Users/daf/theos/vendor/lib/Cephei.framework/Headers/HBPreferences.h \
+  /Users/daf/theos/include/libcolorpicker.h \
   /Users/daf/theos/vendor/include/substrate.h
 
 /Users/daf/theos/Prefix.pch:
@@ -28,5 +29,7 @@
 /Users/daf/Documents/Tweaks/okapi/headers/UIView+draggable.h:
 
 /Users/daf/theos/vendor/lib/Cephei.framework/Headers/HBPreferences.h:
+
+/Users/daf/theos/include/libcolorpicker.h:
 
 /Users/daf/theos/vendor/include/substrate.h:

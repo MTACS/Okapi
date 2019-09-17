@@ -8,6 +8,7 @@
 #import <headers/UIColor-GlobalColors.h>
 #import <headers/UIView+draggable.h>
 #import <Cephei/HBPreferences.h>
+#import <libcolorpicker.h>
 
 #define zebraBlue [UIColor colorWithRed:107/255.0f green:127/255.0f blue:242/255.0f alpha:1.0f]
 
@@ -22,6 +23,8 @@ BOOL hideInstalledIcon;
 BOOL hidePackageIcons;
 BOOL homecells;
 BOOL redesignedQueue;
+BOOL ctintcolor;
+UIColor *ctintcolorhex = nil;
 
 // Definitions
 
@@ -116,9 +119,97 @@ BOOL redesignedQueue;
 - (void)clearQueue;
 @end
 
-// Package Cells
+@interface _UIAlertControllerView : UIView
+@property (nonatomic, strong, readwrite) UIColor *interactionTintColor;
+@end
+
+@interface ZBConsoleViewController : UIViewController {
+
+	UIButton *_completeButton;
+
+}
+@property(retain, nonatomic) UIButton *completeButton; 
+@end
 
 %group Tweak
+
+// Custom tint color 
+
+%hook UITabBar
+
+- (void)setFrame:(CGRect)arg1 {
+
+	%orig;
+
+	if (enabled && ctintcolor) {
+
+		UIColor *color = ctintcolorhex;
+
+		self.tintColor = color;
+
+	}
+
+}
+
+%end
+
+%hook UINavigationBar
+
+- (void)setFrame:(CGRect)arg1 {
+
+	%orig;
+
+	if (enabled && ctintcolor) {
+
+		UIColor *color = ctintcolorhex;
+
+		self.tintColor = color;
+
+	}
+
+}
+
+%end
+
+%hook UIProgressView
+
+- (void)setFrame:(CGRect)arg1 {
+
+	%orig;
+
+	if (enabled && ctintcolor) {
+
+		UIColor *color = ctintcolorhex;
+
+		self.progressTintColor = color;
+
+	}
+
+}
+
+%end
+
+%hook ZBConsoleViewController
+
+- (void)viewDidLoad {
+
+	%orig;
+
+	if (enabled && ctintcolor) {
+
+		UIColor *color = ctintcolorhex;
+
+		UIButton *finishButton = MSHookIvar<UIButton *>(self, "_completeButton");
+
+		finishButton.backgroundColor = color;
+
+	}
+
+}
+
+%end
+
+// Package Cells
 
 %hook ZBPackageTableViewCell
 
@@ -290,7 +381,17 @@ BOOL redesignedQueue;
 
 	if (enabled && tintBadges) {
 
-		self.backgroundColor = [UIColor tintColor];
+		if (ctintcolor) {
+
+			UIColor *color = ctintcolorhex;
+
+			self.backgroundColor = color;
+
+		} else {
+
+			self.backgroundColor = [UIColor tintColor];
+
+		}
 
 	}
 
@@ -352,6 +453,8 @@ BOOL redesignedQueue;
 
 %end
 
+// Queue
+
 %hook LNPopupBar
 
 - (void)layoutSubviews {
@@ -390,6 +493,20 @@ BOOL redesignedQueue;
 
 %end
 
+void loadColors() {
+
+	NSDictionary *colors = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapi.plist"];
+
+	if (!colors) {
+
+		return;
+
+	}
+
+	ctintcolorhex = [LCPParseColorString([colors objectForKey:@"ctintcolorhex"], @"#6B7FF2:1.0") copy];
+
+}
+
 %ctor {
 
 	preferences = [[HBPreferences alloc] initWithIdentifier:@"com.mtac.okapi"];
@@ -413,6 +530,12 @@ BOOL redesignedQueue;
 	[preferences registerBool:&homecells default:YES forKey:@"homecells"];
 
 	[preferences registerBool:&redesignedQueue default:YES forKey:@"redesignedQueue"];
+
+	[preferences registerBool:&ctintcolor default:YES forKey:@"ctintcolor"];
+
+	[preferences registerObject:&ctintcolorhex default:nil forKey:@"ctintcolorhex"];
+
+	loadColors();
 
 	%init(Tweak);
 
