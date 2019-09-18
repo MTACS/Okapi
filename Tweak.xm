@@ -227,33 +227,19 @@ UIColor *ctintcolorhex = nil;
 
 		CGPoint newContentCenter;
 
-		if ([[self deviceModelString] containsString:@"iPhone10,6"] || [[self deviceModelString] containsString:@"iPhone10,3"]) {
+		newContentCenter.y = 29;
 
-			newContentCenter.x = 120;
-
-			newContentCenter.y = 29;
-
-		} else if ([[self deviceModelString] containsString:@"iPhone11,4"] || [[self deviceModelString] containsString:@"iPhone11,6"]) {
-
-			newContentCenter.x = 150;
-
-			newContentCenter.y = 29;
-
-		} else if ([[self deviceModelString] containsString:@"iPad"]) {
-
-			newContentCenter.x = 328;
-		
-		} else {
-
-			newContentCenter.x = 138;
-
-			newContentCenter.y = 29;
-
-		}
+		newContentCenter.x = self.center.x - 48;
 
 		UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
 
 		newContentView.center = newContentCenter;
+
+		CGRect newFrame = self.frame;
+
+		newFrame.size.width = 420;
+
+		self.frame = newFrame;
 
 	}
 
