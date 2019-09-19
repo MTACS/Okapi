@@ -9,6 +9,7 @@
 #import <headers/UIView+draggable.h>
 #import <Cephei/HBPreferences.h>
 #import <libcolorpicker.h>
+#import <AudioToolbox/AudioServices.h>
 
 #define zebraBlue [UIColor colorWithRed:107/255.0f green:127/255.0f blue:242/255.0f alpha:1.0f]
 
@@ -47,6 +48,7 @@ UIColor *ctintcolorhex = nil;
 
 @interface UITabBarButton : UIControl
 @property (nonatomic, assign, readwrite) CGPoint center;
+- (void)refresh;
 @end
 
 @interface ZBRefreshViewController: UIViewController
@@ -225,7 +227,7 @@ UIColor *ctintcolorhex = nil;
 
 		// Remove cell icon
 
-		CGPoint newContentCenter;
+		/* CGPoint newContentCenter;
 
 		newContentCenter.y = 29;
 
@@ -239,7 +241,39 @@ UIColor *ctintcolorhex = nil;
 
 		newFrame.size.width = 420;
 
-		self.frame = newFrame;
+		self.frame = newFrame; */
+
+		
+
+		CGPoint newContentCenter;
+
+		if ([[self deviceModelString] containsString:@"iPhone10,6"] || [[self deviceModelString] containsString:@"iPhone10,3"]) {
+
+			newContentCenter.x = 120;
+
+			newContentCenter.y = 29;
+
+		} else if ([[self deviceModelString] containsString:@"iPhone11,4"] || [[self deviceModelString] containsString:@"iPhone11,6"]) {
+
+			newContentCenter.x = 150;
+
+			newContentCenter.y = 29;
+
+		} else if ([[self deviceModelString] containsString:@"iPad"]) {
+
+			newContentCenter.x = 328;
+
+		} else {
+
+			newContentCenter.x = 138;
+
+			newContentCenter.y = 29;
+
+		}
+
+		UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
+
+		newContentView.center = newContentCenter;
 
 	}
 
@@ -314,6 +348,28 @@ UIColor *ctintcolorhex = nil;
 		} 
 
 	}
+
+	UILongPressGestureRecognizer *longpress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(refresh)];
+
+	longpress.minimumPressDuration = 1.0;
+
+	UITabBarButtonLabel *tbb = MSHookIvar<UITabBarButtonLabel *>(self, "_label");
+
+	if ([tbb.text isEqual:@"Sources"]) {
+
+		[self addGestureRecognizer:longpress];
+
+	}
+
+}
+
+%new
+
+- (void)refresh {
+
+	AudioServicesPlaySystemSound(1519);
+
+	
 
 }
 
