@@ -25,7 +25,10 @@ BOOL hidePackageIcons;
 BOOL homecells;
 BOOL redesignedQueue;
 BOOL ctintcolor;
+BOOL autorespring;
 UIColor *ctintcolorhex = nil;
+CGFloat pcellframe;
+CGFloat respringdelay;
 
 // Definitions
 
@@ -249,7 +252,7 @@ UIColor *ctintcolorhex = nil;
 
 		if ([[self deviceModelString] containsString:@"iPhone10,6"] || [[self deviceModelString] containsString:@"iPhone10,3"]) {
 
-			newContentCenter.x = 120;
+			newContentCenter.x = 120 + pcellframe;
 
 			newContentCenter.y = 29;
 
@@ -369,7 +372,9 @@ UIColor *ctintcolorhex = nil;
 
 	AudioServicesPlaySystemSound(1519);
 
-	
+	/* ZBRefreshableTableViewController *zbrtvc = [[ZBRefreshableTableViewController alloc] init];
+
+	[zbrtvc refreshSources]; */
 
 }
 
@@ -495,6 +500,24 @@ UIColor *ctintcolorhex = nil;
 
 %end
 
+// Console
+
+%hook ZBConsoleViewController
+
+- (void)updateCompleteButton {
+
+    %orig;
+
+	if (enabled && autorespring) {
+
+		[self.completeButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+
+	}
+
+}
+
+%end
+
 // Queue
 
 %hook LNPopupBar
@@ -576,6 +599,12 @@ void loadColors() {
 	[preferences registerBool:&ctintcolor default:YES forKey:@"ctintcolor"];
 
 	[preferences registerObject:&ctintcolorhex default:nil forKey:@"ctintcolorhex"];
+
+	[preferences registerFloat:&pcellframe default:0.0 forKey:@"pcellframe"];
+
+	[preferences registerFloat:&respringdelay default:0.0 forKey:@"respringdelay"];
+
+	[preferences registerBool:&autorespring default:YES forKey:@"autorespring"];
 
 	loadColors();
 

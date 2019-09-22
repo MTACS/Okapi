@@ -25,6 +25,14 @@
 @property (nonatomic, retain) UILabel *titleLabel;
 @end
 
+@interface PackageSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
 // Thanks Nepeta
 
 @interface OkapiAppearanceSettings: HBAppearanceSettings

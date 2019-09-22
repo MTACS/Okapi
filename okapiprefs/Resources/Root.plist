@@ -94,51 +94,15 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
+			<string>PSLinkListCell</string>
 			<key>default</key>
-			<true/>
+			<string></string>
+			<key>detail</key>
+			<string>PackageSettingsListController</string>
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>label</key>
-			<string>Hide package cell icons</string>
-			<key>key</key>
-			<string>hidePackageIcons</string>
-			<key>alternateColors</key>
-			<true/>
-			<key>PostNotification</key>
-			<string>com.mtac.okapi/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.mtac.okapi</string>
-			<key>label</key>
-			<string>Hide package installed image</string>
-			<key>key</key>
-			<string>hideInstalledIcon</string>
-			<key>alternateColors</key>
-			<true/>
-			<key>PostNotification</key>
-			<string>com.mtac.okapi/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.mtac.okapi</string>
-			<key>label</key>
-			<string>Hide paid package image</string>
-			<key>key</key>
-			<string>hidePaidIcon</string>
-			<key>alternateColors</key>
-			<true/>
-			<key>PostNotification</key>
-			<string>com.mtac.okapi/ReloadPrefs</string>
+			<string>Packages</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -224,6 +188,50 @@
 			<true/>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Install View</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
+			<key>label</key>
+			<string>Automatically respring</string>
+			<key>key</key>
+			<string>autorespring</string>
+			<key>alternateColors</key>
+			<true/>
+			<key>PostNotification</key>
+			<string>com.mtac.okapi/ReloadPrefs</string>
+		</dict>
+		<dict>
+    		<key>cell</key>
+    		<string>PSSliderCell</string>
+    		<!--<key>cellClass</key>
+    		<string>HBDiscreteSliderTableCell</string>-->
+    		<key>default</key>
+    		<real>5</real>
+    		<key>defaults</key>
+    		<string>com.mtac.okapi</string>
+    		<key>key</key>
+   		 	<string>respringdelay</string>
+   		 	<key>label</key>
+    		<string>Respring Delay</string>
+    		<key>max</key>
+    		<real>5</real>
+    		<key>min</key>
+    		<real>0</real>
+			<key>isSegmented</key>
+			<false/>
+			<key>showValue</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>cell</key>
