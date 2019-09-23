@@ -17,7 +17,7 @@
 @property (nonatomic, retain) UIImageView *iconView;
 @end
 
-@interface MoreSettingsListController: HBRootListController {
+@interface PackageSettingsListController: HBRootListController {
 
     UITableView * _table;
 
@@ -25,7 +25,39 @@
 @property (nonatomic, retain) UILabel *titleLabel;
 @end
 
-@interface PackageSettingsListController: HBRootListController {
+@interface AppSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface HomeSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface QueueSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface SearchSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface ConsoleSettingsListController: HBRootListController {
 
     UITableView * _table;
 

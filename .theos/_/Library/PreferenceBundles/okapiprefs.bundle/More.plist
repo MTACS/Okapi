@@ -4,12 +4,6 @@
 <dict>
 	<key>items</key>
 	<array>
-    <dict>
-		<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>More</string>
-		</dict>
         <dict>
 			<key>cellClass</key>
 			<string>HBLinkTableCell</string>

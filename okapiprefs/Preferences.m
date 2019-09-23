@@ -1,6 +1,216 @@
 #include "Preferences.h"
 #import <AudioToolbox/AudioServices.h>
 
+@implementation AppSettingsListController
+
+- (NSArray *)specifiers {
+	if (!_specifiers) {
+		_specifiers = [[self loadSpecifiersFromPlistName:@"App" target:self] retain];
+	}
+
+	return _specifiers;
+}
+
+- (instancetype)init { // Thanks Nepeta
+
+	self = [super init];
+
+	if (self) {
+
+		OkapiAppearanceSettings *appearanceSettings = [[OkapiAppearanceSettings alloc] init];
+		self.hb_appearanceSettings = appearanceSettings;
+		self.navigationItem.titleView = [UIView new];
+		self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+		self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+		self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.titleLabel.text = @"App";
+		self.titleLabel.textColor = [UIColor whiteColor];
+		self.titleLabel.textAlignment = NSTextAlignmentCenter;
+		[self.navigationItem.titleView addSubview:self.titleLabel];
+
+		[NSLayoutConstraint activateConstraints:@[
+            [self.titleLabel.topAnchor constraintEqualToAnchor:self.navigationItem.titleView.topAnchor],
+            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.navigationItem.titleView.leadingAnchor],
+            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.navigationItem.titleView.trailingAnchor],
+            [self.titleLabel.bottomAnchor constraintEqualToAnchor:self.navigationItem.titleView.bottomAnchor],
+        ]];
+
+	}
+
+	return self;
+
+}
+
+@end
+
+@implementation HomeSettingsListController
+
+- (NSArray *)specifiers {
+	if (!_specifiers) {
+		_specifiers = [[self loadSpecifiersFromPlistName:@"Home" target:self] retain];
+	}
+
+	return _specifiers;
+}
+
+- (instancetype)init { // Thanks Nepeta
+
+	self = [super init];
+
+	if (self) {
+
+		OkapiAppearanceSettings *appearanceSettings = [[OkapiAppearanceSettings alloc] init];
+		self.hb_appearanceSettings = appearanceSettings;
+		self.navigationItem.titleView = [UIView new];
+		self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+		self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+		self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.titleLabel.text = @"Home";
+		self.titleLabel.textColor = [UIColor whiteColor];
+		self.titleLabel.textAlignment = NSTextAlignmentCenter;
+		[self.navigationItem.titleView addSubview:self.titleLabel];
+
+		[NSLayoutConstraint activateConstraints:@[
+            [self.titleLabel.topAnchor constraintEqualToAnchor:self.navigationItem.titleView.topAnchor],
+            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.navigationItem.titleView.leadingAnchor],
+            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.navigationItem.titleView.trailingAnchor],
+            [self.titleLabel.bottomAnchor constraintEqualToAnchor:self.navigationItem.titleView.bottomAnchor],
+        ]];
+
+	}
+
+	return self;
+
+}
+
+@end
+
+@implementation QueueSettingsListController
+
+- (NSArray *)specifiers {
+	if (!_specifiers) {
+		_specifiers = [[self loadSpecifiersFromPlistName:@"Queue" target:self] retain];
+	}
+
+	return _specifiers;
+}
+
+- (instancetype)init { // Thanks Nepeta
+
+	self = [super init];
+
+	if (self) {
+
+		OkapiAppearanceSettings *appearanceSettings = [[OkapiAppearanceSettings alloc] init];
+		self.hb_appearanceSettings = appearanceSettings;
+		self.navigationItem.titleView = [UIView new];
+		self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+		self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+		self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.titleLabel.text = @"Queue";
+		self.titleLabel.textColor = [UIColor whiteColor];
+		self.titleLabel.textAlignment = NSTextAlignmentCenter;
+		[self.navigationItem.titleView addSubview:self.titleLabel];
+
+		[NSLayoutConstraint activateConstraints:@[
+            [self.titleLabel.topAnchor constraintEqualToAnchor:self.navigationItem.titleView.topAnchor],
+            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.navigationItem.titleView.leadingAnchor],
+            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.navigationItem.titleView.trailingAnchor],
+            [self.titleLabel.bottomAnchor constraintEqualToAnchor:self.navigationItem.titleView.bottomAnchor],
+        ]];
+
+	}
+
+	return self;
+
+}
+
+@end
+
+@implementation SearchSettingsListController
+
+- (NSArray *)specifiers {
+	if (!_specifiers) {
+		_specifiers = [[self loadSpecifiersFromPlistName:@"Search" target:self] retain];
+	}
+
+	return _specifiers;
+}
+
+- (instancetype)init { // Thanks Nepeta
+
+	self = [super init];
+
+	if (self) {
+
+		OkapiAppearanceSettings *appearanceSettings = [[OkapiAppearanceSettings alloc] init];
+		self.hb_appearanceSettings = appearanceSettings;
+		self.navigationItem.titleView = [UIView new];
+		self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+		self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+		self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.titleLabel.text = @"Search";
+		self.titleLabel.textColor = [UIColor whiteColor];
+		self.titleLabel.textAlignment = NSTextAlignmentCenter;
+		[self.navigationItem.titleView addSubview:self.titleLabel];
+
+		[NSLayoutConstraint activateConstraints:@[
+            [self.titleLabel.topAnchor constraintEqualToAnchor:self.navigationItem.titleView.topAnchor],
+            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.navigationItem.titleView.leadingAnchor],
+            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.navigationItem.titleView.trailingAnchor],
+            [self.titleLabel.bottomAnchor constraintEqualToAnchor:self.navigationItem.titleView.bottomAnchor],
+        ]];
+
+	}
+
+	return self;
+
+}
+
+@end
+
+@implementation ConsoleSettingsListController
+
+- (NSArray *)specifiers {
+	if (!_specifiers) {
+		_specifiers = [[self loadSpecifiersFromPlistName:@"Console" target:self] retain];
+	}
+
+	return _specifiers;
+}
+
+- (instancetype)init { // Thanks Nepeta
+
+	self = [super init];
+
+	if (self) {
+
+		OkapiAppearanceSettings *appearanceSettings = [[OkapiAppearanceSettings alloc] init];
+		self.hb_appearanceSettings = appearanceSettings;
+		self.navigationItem.titleView = [UIView new];
+		self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+		self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+		self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		self.titleLabel.text = @"Install View";
+		self.titleLabel.textColor = [UIColor whiteColor];
+		self.titleLabel.textAlignment = NSTextAlignmentCenter;
+		[self.navigationItem.titleView addSubview:self.titleLabel];
+
+		[NSLayoutConstraint activateConstraints:@[
+            [self.titleLabel.topAnchor constraintEqualToAnchor:self.navigationItem.titleView.topAnchor],
+            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.navigationItem.titleView.leadingAnchor],
+            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.navigationItem.titleView.trailingAnchor],
+            [self.titleLabel.bottomAnchor constraintEqualToAnchor:self.navigationItem.titleView.bottomAnchor],
+        ]];
+
+	}
+
+	return self;
+
+}
+
+@end
+
 @implementation PackageSettingsListController
 
 - (NSArray *)specifiers {
@@ -24,48 +234,6 @@
 		self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
 		self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.titleLabel.text = @"Packages";
-		self.titleLabel.textColor = [UIColor whiteColor];
-		self.titleLabel.textAlignment = NSTextAlignmentCenter;
-		[self.navigationItem.titleView addSubview:self.titleLabel];
-
-		[NSLayoutConstraint activateConstraints:@[
-            [self.titleLabel.topAnchor constraintEqualToAnchor:self.navigationItem.titleView.topAnchor],
-            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.navigationItem.titleView.leadingAnchor],
-            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.navigationItem.titleView.trailingAnchor],
-            [self.titleLabel.bottomAnchor constraintEqualToAnchor:self.navigationItem.titleView.bottomAnchor],
-        ]];
-
-	}
-
-	return self;
-
-}
-
-@end
-
-@implementation MoreSettingsListController
-
-- (NSArray *)specifiers {
-	if (!_specifiers) {
-		_specifiers = [[self loadSpecifiersFromPlistName:@"More" target:self] retain];
-	}
-
-	return _specifiers;
-}
-
-- (instancetype)init { // Thanks Nepeta
-
-	self = [super init];
-
-	if (self) {
-
-		OkapiAppearanceSettings *appearanceSettings = [[OkapiAppearanceSettings alloc] init];
-		self.hb_appearanceSettings = appearanceSettings;
-		self.navigationItem.titleView = [UIView new];
-		self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
-		self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
-		self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.titleLabel.text = @"";
 		self.titleLabel.textColor = [UIColor whiteColor];
 		self.titleLabel.textAlignment = NSTextAlignmentCenter;
 		[self.navigationItem.titleView addSubview:self.titleLabel];

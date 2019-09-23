@@ -26,6 +26,7 @@ BOOL homecells;
 BOOL redesignedQueue;
 BOOL ctintcolor;
 BOOL autorespring;
+BOOL hidesearches;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
@@ -107,6 +108,7 @@ CGFloat respringdelay;
 
 @interface ZBSearchViewController : UITableViewController
 @property (retain, nonatomic) UISearchController *searchController;
+- (void)clearSearches;
 @end
 
 @interface ZBHomeTableViewController : UITableViewController
@@ -500,6 +502,20 @@ CGFloat respringdelay;
 
 %end
 
+// Search
+
+%hook ZBSearchViewController
+
+- (void)didDismissSearchController:(id)arg1 {
+
+	%orig;
+
+	[self clearSearches];
+
+}
+
+%end
+
 // Console
 
 %hook ZBConsoleViewController
@@ -509,6 +525,12 @@ CGFloat respringdelay;
     %orig;
 
 	if (enabled && autorespring) {
+
+		if (respringdelay > 0) {
+
+			sleep(respringdelay);
+
+		}
 
 		[self.completeButton sendActionsForControlEvents:UIControlEventTouchUpInside];
 
@@ -605,6 +627,8 @@ void loadColors() {
 	[preferences registerFloat:&respringdelay default:0.0 forKey:@"respringdelay"];
 
 	[preferences registerBool:&autorespring default:YES forKey:@"autorespring"];
+
+	[preferences registerBool:&hidesearches default:YES forKey:@"hidesearches"];
 
 	loadColors();
 
