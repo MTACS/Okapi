@@ -10,8 +10,12 @@
 #import <Cephei/HBPreferences.h>
 #import <libcolorpicker.h>
 #import <AudioToolbox/AudioServices.h>
+#import <Foundation/Foundation.h>
+#import <LocalAuthentication/LocalAuthentication.h>
 
 #define zebraBlue [UIColor colorWithRed:107/255.0f green:127/255.0f blue:242/255.0f alpha:1.0f]
+#define LocalizedString(string) [NSBundle.mainBundle localizedStringForKey:string value:string table:nil]
+#define rootViewController [[[[UIApplication sharedApplication] delegate] window] rootViewController]
 
 HBPreferences *preferences;
 BOOL enabled;
@@ -27,9 +31,12 @@ BOOL redesignedQueue;
 BOOL ctintcolor;
 BOOL autorespring;
 BOOL hidesearches;
+BOOL confirmfaceid;
+BOOL useCydiaIcons;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
+LAPolicy policy;
 
 // Definitions
 
@@ -136,6 +143,14 @@ CGFloat respringdelay;
 
 }
 @property(retain, nonatomic) UIButton *completeButton; 
+@end
+
+@interface ZBQueueViewController : UITableViewController
+- (void)confirm:(id)arg1;
+@end
+
+@interface ZBPackage : NSObject
+@property(retain, nonatomic) NSString *section;
 @end
 
 %group Tweak
@@ -260,17 +275,17 @@ CGFloat respringdelay;
 
 		} else if ([[self deviceModelString] containsString:@"iPhone11,4"] || [[self deviceModelString] containsString:@"iPhone11,6"]) {
 
-			newContentCenter.x = 150;
+			newContentCenter.x = 150 + pcellframe;
 
 			newContentCenter.y = 29;
 
 		} else if ([[self deviceModelString] containsString:@"iPad"]) {
 
-			newContentCenter.x = 328;
+			newContentCenter.x = 328 + pcellframe;
 
 		} else {
 
-			newContentCenter.x = 138;
+			newContentCenter.x = 138 + pcellframe;
 
 			newContentCenter.y = 29;
 
@@ -297,6 +312,28 @@ CGFloat respringdelay;
 		paid.hidden = YES;
 
 	}
+
+}
+
+- (void)updateData:(ZBPackage *)package {
+
+	%orig;
+
+	if (enabled && useCydiaIcons) {
+
+		NSString *sectionString = package.section;
+
+		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
+
+		UIImage *iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:sectionString ofType:@"png"]];
+
+		UIImageView *newIconImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
+
+		newIconImageView.image = iconImage;
+		
+	}
+
+	
 
 }
 
@@ -510,7 +547,11 @@ CGFloat respringdelay;
 
 	%orig;
 
-	[self clearSearches];
+	if (enabled && hidesearches) {
+
+		[self clearSearches];
+
+	}
 
 }
 
@@ -541,6 +582,42 @@ CGFloat respringdelay;
 %end
 
 // Queue
+
+%hook ZBQueueViewController 
+
+- (void)confirm:(id)arg1 {
+
+	if (enabled && confirmfaceid) {
+
+		@autoreleasepool {
+		LAContext *context = [[LAContext alloc] init];
+		[context evaluatePolicy:policy
+			localizedReason:LocalizedString(@"Authentication is required")
+			reply:^(BOOL success, NSError *error) {
+				if (success || (error && ((error.code == LAErrorPasscodeNotSet) ||
+					(
+						(policy == LAPolicyDeviceOwnerAuthenticationWithBiometrics) && (
+							(error.code == LAErrorTouchIDNotAvailable) ||
+							(error.code == LAErrorTouchIDNotEnrolled)
+						)
+					)
+				))) {
+		
+						dispatch_sync(dispatch_get_main_queue(), ^{
+
+							%orig;
+
+						});
+					}
+				}
+			];
+		}
+
+	}
+
+}
+
+%end
 
 %hook LNPopupBar
 
@@ -630,7 +707,14 @@ void loadColors() {
 
 	[preferences registerBool:&hidesearches default:YES forKey:@"hidesearches"];
 
+	[preferences registerBool:&confirmfaceid default:YES forKey:@"confirmfaceid"];
+
+	[preferences registerBool:&useCydiaIcons default:YES forKey:@"useCydiaIcons"];
+
 	loadColors();
+
+	if (kCFCoreFoundationVersionNumber >= 1240.10) policy = LAPolicyDeviceOwnerAuthentication;
+	else policy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
 
 	%init(Tweak);
 

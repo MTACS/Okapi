@@ -8,12 +8,6 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>  </string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
 			<string>   </string>
 		</dict>
 		<dict>
@@ -70,18 +64,6 @@
 			<key>default</key>
 			<string></string>
 			<key>detail</key>
-			<string>PackageSettingsListController</string>
-			<key>defaults</key>
-			<string>com.mtac.okapi</string>
-			<key>label</key>
-			<string>Packages</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkListCell</string>
-			<key>default</key>
-			<string></string>
-			<key>detail</key>
 			<string>QueueSettingsListController</string>
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
@@ -111,6 +93,36 @@
 			<string>com.mtac.okapi</string>
 			<key>label</key>
 			<string>Console</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>default</key>
+			<string></string>
+			<key>detail</key>
+			<string>PackageSettingsListController</string>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
+			<key>label</key>
+			<string>Packages</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>default</key>
+			<string></string>
+			<key>detail</key>
+			<string>ExperimentalSettingsListController</string>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
+			<key>label</key>
+			<string>Experimental</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -203,7 +215,7 @@
 			<key>footerAlignment</key>
 			<string>1</string>
 			<key>footerText</key>
-			<string>2019 © MTAC</string>
+			<string>2019 © MTAC Research</string>
 		</dict>
 	</array>
 	<key>title</key>

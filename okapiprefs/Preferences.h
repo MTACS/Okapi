@@ -41,6 +41,14 @@
 @property (nonatomic, retain) UILabel *titleLabel;
 @end
 
+@interface ExperimentalSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
 @interface QueueSettingsListController: HBRootListController {
 
     UITableView * _table;
