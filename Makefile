@@ -2,7 +2,7 @@ THEOS_DEVICE_IP = 10.0.0.151
 
 ARCHS = arm64 arm64e 
 
-DEBUG = 1
+DEBUG = 0
 
 include $(THEOS)/makefiles/common.mk
 

@@ -153,6 +153,10 @@ LAPolicy policy;
 @property(retain, nonatomic) NSString *section;
 @end
 
+@interface ZBRepo : NSObject
+@property(retain, nonatomic) NSString *baseURL;
+@end
+
 %group Tweak
 
 // Custom tint color 
@@ -243,27 +247,7 @@ LAPolicy policy;
 
 		UIImageView *newImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
 
-		newImageView.hidden = YES;
-
-		// Remove cell icon
-
-		/* CGPoint newContentCenter;
-
-		newContentCenter.y = 29;
-
-		newContentCenter.x = self.center.x - 48;
-
-		UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
-
-		newContentView.center = newContentCenter;
-
-		CGRect newFrame = self.frame;
-
-		newFrame.size.width = 420;
-
-		self.frame = newFrame; */
-
-		
+		newImageView.hidden = YES;		
 
 		CGPoint newContentCenter;
 
@@ -329,11 +313,19 @@ LAPolicy policy;
 
 		UIImageView *newIconImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
 
-		newIconImageView.image = iconImage;
+		if (iconImage == nil) {
+
+			UIImage *staticIconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
+
+			newIconImageView.image = staticIconImage;
+
+		} else {
+
+			newIconImageView.image = iconImage;
+
+		}
 		
 	}
-
-	
 
 }
 
@@ -529,7 +521,7 @@ LAPolicy policy;
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.5"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.6"]];
 
 	newLabel.numberOfLines = 2;
 
