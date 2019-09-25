@@ -12,6 +12,7 @@
 #import <AudioToolbox/AudioServices.h>
 #import <Foundation/Foundation.h>
 #import <LocalAuthentication/LocalAuthentication.h>
+// #import "/Users/daf/Documents/ZebraHeaders/ZBChangesTableViewController.h"
 
 #define zebraBlue [UIColor colorWithRed:107/255.0f green:127/255.0f blue:242/255.0f alpha:1.0f]
 #define LocalizedString(string) [NSBundle.mainBundle localizedStringForKey:string value:string table:nil]
@@ -33,10 +34,20 @@ BOOL autorespring;
 BOOL hidesearches;
 BOOL confirmfaceid;
 BOOL useCydiaIcons;
+BOOL hideThemes;
+BOOL useCommunityRepos;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
 LAPolicy policy;
+NSArray *moreRepos;
+
+enum ZBSourcesOrder {
+    ZBTransfer,
+    ZBJailbreakRepo,
+    ZBCommunity,
+	ZBMore
+};
 
 // Definitions
 
@@ -155,6 +166,20 @@ LAPolicy policy;
 
 @interface ZBRepo : NSObject
 @property(retain, nonatomic) NSString *baseURL;
+@end
+
+@interface ZBChangesTableViewController
+- (double)tableView:(id)arg1 heightForHeaderInSection:(long long)arg2;
+@end
+
+@interface ZBRefreshableTableViewController : UITableViewController
++ (_Bool)supportRefresh;
+- (void)refreshSources:(id)arg1;
+@end
+
+@interface ZBCommunityReposTableViewController : UITableViewController
+- (void)fetchMoreRepoJSON;
+@property(retain) NSArray *communityRepos;
 @end
 
 %group Tweak
@@ -297,6 +322,8 @@ LAPolicy policy;
 
 	}
 
+	
+
 }
 
 - (void)updateData:(ZBPackage *)package {
@@ -327,6 +354,18 @@ LAPolicy policy;
 		
 	}
 
+	/* if (enabled && hideThemes) {
+
+		if ([package.section isEqual:@"Themes"]) {
+
+			UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
+
+			newContentView.alpha = 0.1;
+
+		}		
+
+	} */
+
 }
 
 %new
@@ -340,6 +379,52 @@ LAPolicy policy;
 	return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 
 }
+
+%end
+
+// Community Repos
+
+%hook ZBCommunityReposTableViewController
+
+- (void)fetchRepoJSON {
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setHTTPMethod:@"GET"];
+
+	if (enabled && useCommunityRepos) {
+
+		[request setURL:[NSURL URLWithString:@"https://mtac.app/api/morerepos.json"]];
+
+	} else {
+
+		[request setURL:[NSURL URLWithString:@"https://getzbra.com/api/communityrepos.json"]];
+
+	}
+
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
+      ^(NSData * _Nullable data,
+        NSURLResponse * _Nullable response,
+        NSError * _Nullable error) {
+        if (data && !error) {
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            if ([json objectForKey:@"repos"]) {
+
+				// NSArray *newCommunityRepos = MSHookIvar<NSArray *>(self, "_communityRepos");
+
+				self.communityRepos = json[@"repos"];
+            	
+            }
+              // self->changeLogArray = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+              dispatch_async(dispatch_get_main_queue(), ^{
+                  [self.tableView reloadData];
+              });
+          }
+          if (error){
+              NSLog(@"[Zebra] Github error %@", error);
+          }
+      }] resume];
+    
+}
+
 
 %end
 
@@ -382,30 +467,6 @@ LAPolicy policy;
 		} 
 
 	}
-
-	UILongPressGestureRecognizer *longpress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(refresh)];
-
-	longpress.minimumPressDuration = 1.0;
-
-	UITabBarButtonLabel *tbb = MSHookIvar<UITabBarButtonLabel *>(self, "_label");
-
-	if ([tbb.text isEqual:@"Sources"]) {
-
-		[self addGestureRecognizer:longpress];
-
-	}
-
-}
-
-%new
-
-- (void)refresh {
-
-	AudioServicesPlaySystemSound(1519);
-
-	/* ZBRefreshableTableViewController *zbrtvc = [[ZBRefreshableTableViewController alloc] init];
-
-	[zbrtvc refreshSources]; */
 
 }
 
@@ -514,6 +575,22 @@ LAPolicy policy;
 %hook ZBHomeTableViewController
 
 - (void)viewDidLoad {
+
+	%orig;
+
+	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
+
+	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
+
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.7"]];
+
+	newLabel.numberOfLines = 2;
+
+	newLabel.text = uniqueid;
+
+}
+
+- (void)toggleDarkMode:(id)arg1 {
 
 	%orig;
 
@@ -702,6 +779,10 @@ void loadColors() {
 	[preferences registerBool:&confirmfaceid default:YES forKey:@"confirmfaceid"];
 
 	[preferences registerBool:&useCydiaIcons default:YES forKey:@"useCydiaIcons"];
+
+	[preferences registerBool:&hideThemes default:YES forKey:@"hideThemes"];
+
+	[preferences registerBool:&useCommunityRepos default:YES forKey:@"useCommunityRepos"];
 
 	loadColors();
 
