@@ -1,7 +1,7 @@
 Package: com.mtac.okapi
 Name: Okapi
-Depends: mobilesubstrate
-Version: 1.0.7
+Depends: mobilesubstrate, ws.hbang.common, org.thebigboss.libcolorpicker
+Version: 1.0.8
 Architecture: iphoneos-arm
 Description: Enhance your Zebra experience
 Maintainer: MTAC

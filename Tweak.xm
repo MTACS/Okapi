@@ -136,6 +136,7 @@ enum ZBSourcesOrder {
 @interface LNPopupBar 
 
 - (void)setImage:(UIImage *)image;
+- (void)addGestureRecognizer:(UIGestureRecognizer *)arg1;
 
 @end
 
@@ -356,7 +357,7 @@ enum ZBSourcesOrder {
 
 	/* if (enabled && hideThemes) {
 
-		if ([package.section isEqual:@"Themes"]) {
+		if ([package.section isEqualToString:@"Themes"]) {
 
 			UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
 
@@ -582,7 +583,7 @@ enum ZBSourcesOrder {
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.7"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 8"]];
 
 	newLabel.numberOfLines = 2;
 
@@ -682,6 +683,10 @@ enum ZBSourcesOrder {
 			];
 		}
 
+	} else {
+
+		%orig;
+
 	}
 
 }
@@ -719,6 +724,12 @@ enum ZBSourcesOrder {
 		[self setImage:dliv.image];
 
 	}
+
+	UILongPressGestureRecognizer *longpress = [[UILongPressGestureRecognizer alloc] initWithTarget:[%c(ZBQueue) sharedInstance] action:@selector(clearQueue)];
+
+	longpress.minimumPressDuration = 1.0;
+
+	[self addGestureRecognizer:longpress];
 
 }
 
