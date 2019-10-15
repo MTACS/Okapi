@@ -5,6 +5,7 @@
   /Users/daf/theos/vendor/include/_Prefix/IOSMacros.h \
   /Users/daf/theos/vendor/include/HBLog.h \
   /Users/daf/theos/vendor/include/CoreFoundation/CFLogUtilities.h \
+  /Users/daf/Documents/Tweaks/okapi/Tweak.h \
   /Users/daf/Documents/Tweaks/okapi/headers/MobileGestalt.h \
   /Users/daf/Documents/Tweaks/okapi/headers/UIColor-GlobalColors.h \
   /Users/daf/Documents/Tweaks/okapi/headers/UIView+draggable.h \
@@ -21,6 +22,8 @@
 /Users/daf/theos/vendor/include/HBLog.h:
 
 /Users/daf/theos/vendor/include/CoreFoundation/CFLogUtilities.h:
+
+/Users/daf/Documents/Tweaks/okapi/Tweak.h:
 
 /Users/daf/Documents/Tweaks/okapi/headers/MobileGestalt.h:
 

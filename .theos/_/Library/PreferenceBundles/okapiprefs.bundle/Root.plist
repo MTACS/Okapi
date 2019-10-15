@@ -215,7 +215,7 @@
 			<key>footerAlignment</key>
 			<string>1</string>
 			<key>footerText</key>
-			<string>Okapi 1.0.8</string>
+			<string>Okapi 1.0.9</string>
 		</dict>
 		<dict>
 			<key>cell</key>

@@ -8,8 +8,12 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Okapi
 Okapi_FILES = Tweak.xm
-Okapi_EXTRA_FRAMEWORKS = Cephei
+Okapi_EXTRA_FRAMEWORKS += Cephei
 Okapi_LIBRARIES = colorpicker
+Okapi_FRAMEWORKS = UIKit
+# OkapiSB_FILES = SB.xm
+# OkapiSB_EXTRA_FRAMEWORKS += Cephei
+# OkapiSB_FRAMEWORKS = UIKit
 
 BUNDLE_NAME = com.mtac.okapi
 com.mtac.okapi_INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries

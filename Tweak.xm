@@ -1,18 +1,4 @@
-#include <stdlib.h>
-#import <UIKit/UIKit.h>
-#import <headers/MobileGestalt.h>
-#import <sys/utsname.h>
-#import <sys/sysctl.h>
-#import <sys/types.h>
-#import <sys/stat.h>
-#import <headers/UIColor-GlobalColors.h>
-#import <headers/UIView+draggable.h>
-#import <Cephei/HBPreferences.h>
-#import <libcolorpicker.h>
-#import <AudioToolbox/AudioServices.h>
-#import <Foundation/Foundation.h>
-#import <LocalAuthentication/LocalAuthentication.h>
-// #import "/Users/daf/Documents/ZebraHeaders/ZBChangesTableViewController.h"
+#import "Tweak.h"
 
 #define zebraBlue [UIColor colorWithRed:107/255.0f green:127/255.0f blue:242/255.0f alpha:1.0f]
 #define LocalizedString(string) [NSBundle.mainBundle localizedStringForKey:string value:string table:nil]
@@ -36,6 +22,7 @@ BOOL confirmfaceid;
 BOOL useCydiaIcons;
 BOOL hideThemes;
 BOOL useCommunityRepos;
+BOOL betterexport;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
@@ -48,140 +35,6 @@ enum ZBSourcesOrder {
     ZBCommunity,
 	ZBMore
 };
-
-// Definitions
-
-@interface ZBPackageTableViewCell : UITableViewCell {
-    UIView *_backgroundContainerView;
-    UIImageView *_iconImageView;
-    UILabel *_packageLabel;
-    UILabel *_descriptionLabel;
-    UIImageView *_isPaidImageView;
-    UIImageView *_isInstalledImageView;
-    UILabel *_queueStatusLabel;
-}
-@property (nonatomic, assign, readwrite) CGRect frame;
-- (NSString *)deviceModelString;
-@end
-
-@interface UITabBarButtonLabel : UILabel
-@property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
-@end
-
-@interface UITabBarButton : UIControl
-@property (nonatomic, assign, readwrite) CGPoint center;
-- (void)refresh;
-@end
-
-@interface ZBRefreshViewController: UIViewController
-@end
-
-@interface ZBPackageInfoView: UIView {
-
-	UIImageView *_packageIcon;
-	UILabel *_packageName;
-
-}
-@end
-
-@interface ZBRepoTableViewCell : UITableViewCell {
-    UIImageView *_iconImageView;
-    UILabel *_repoLabel;
-    UIView *_backgroundContainerView;
-    UILabel *_urlLabel;
-    UIView *_accessoryZBView;
-}
-@end
-
-@interface _UIBadgeView : UIView
-@property (nonatomic, copy, readwrite) UIColor *backgroundColor;
-@end
-
-@interface SBSeparatorView : UIView
-@property (nonatomic, copy, readwrite) UIColor *backgroundColor;
-@end
-
-@interface ZBDevice : NSObject
-+ (long long)selectedColorTint;
-+ (void)refreshViews;
-+ (void)applyThemeSettings;
-+ (void)configureLightMode;
-+ (void)configureDarkMode;
-+ (void)setDarkModeEnabled:(_Bool)arg1;
-+ (_Bool)darkModeOledEnabled;
-+ (_Bool)darkModeEnabled;
-+ (id)deviceType;
-+ (_Bool)isUncover;
-+ (_Bool)isElectra;
-+ (_Bool)isChimera;
-+ (_Bool)_isRegularDirectory:(const char *)arg1;
-+ (_Bool)_isRegularFile:(const char *)arg1;
-+ (void)uicache:(id)arg1 observer:(id)arg2;
-+ (void)sbreload;
-+ (id)machineID;
-+ (id)deviceModelID;
-+ (id)UDID;
-+ (_Bool)needsSimulation;
-@end
-
-@interface ZBSearchViewController : UITableViewController
-@property (retain, nonatomic) UISearchController *searchController;
-- (void)clearSearches;
-@end
-
-@interface ZBHomeTableViewController : UITableViewController
-@property (retain, nonatomic) UILabel *udidLabel;
-@end
-
-@interface LNPopupBar 
-
-- (void)setImage:(UIImage *)image;
-- (void)addGestureRecognizer:(UIGestureRecognizer *)arg1;
-
-@end
-
-@interface ZBQueue
-+ (id)sharedInstance;
-- (void)clearQueue;
-@end
-
-@interface _UIAlertControllerView : UIView
-@property (nonatomic, strong, readwrite) UIColor *interactionTintColor;
-@end
-
-@interface ZBConsoleViewController : UIViewController {
-
-	UIButton *_completeButton;
-
-}
-@property(retain, nonatomic) UIButton *completeButton; 
-@end
-
-@interface ZBQueueViewController : UITableViewController
-- (void)confirm:(id)arg1;
-@end
-
-@interface ZBPackage : NSObject
-@property(retain, nonatomic) NSString *section;
-@end
-
-@interface ZBRepo : NSObject
-@property(retain, nonatomic) NSString *baseURL;
-@end
-
-@interface ZBChangesTableViewController
-- (double)tableView:(id)arg1 heightForHeaderInSection:(long long)arg2;
-@end
-
-@interface ZBRefreshableTableViewController : UITableViewController
-+ (_Bool)supportRefresh;
-- (void)refreshSources:(id)arg1;
-@end
-
-@interface ZBCommunityReposTableViewController : UITableViewController
-- (void)fetchMoreRepoJSON;
-@property(retain) NSArray *communityRepos;
-@end
 
 %group Tweak
 
@@ -269,44 +122,6 @@ enum ZBSourcesOrder {
 
 	%orig;
 
-	if (enabled && hidePackageIcons) {
-
-		UIImageView *newImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
-
-		newImageView.hidden = YES;		
-
-		CGPoint newContentCenter;
-
-		if ([[self deviceModelString] containsString:@"iPhone10,6"] || [[self deviceModelString] containsString:@"iPhone10,3"]) {
-
-			newContentCenter.x = 120 + pcellframe;
-
-			newContentCenter.y = 29;
-
-		} else if ([[self deviceModelString] containsString:@"iPhone11,4"] || [[self deviceModelString] containsString:@"iPhone11,6"]) {
-
-			newContentCenter.x = 150 + pcellframe;
-
-			newContentCenter.y = 29;
-
-		} else if ([[self deviceModelString] containsString:@"iPad"]) {
-
-			newContentCenter.x = 328 + pcellframe;
-
-		} else {
-
-			newContentCenter.x = 138 + pcellframe;
-
-			newContentCenter.y = 29;
-
-		}
-
-		UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
-
-		newContentView.center = newContentCenter;
-
-	}
-
 	if (enabled && hideInstalledIcon) {
 
 		UIImageView *installed = MSHookIvar<UIImageView *>(self, "_isInstalledImageView");
@@ -355,29 +170,17 @@ enum ZBSourcesOrder {
 		
 	}
 
-	/* if (enabled && hideThemes) {
+	if (enabled && hideThemes) {
 
-		if ([package.section isEqualToString:@"Themes"]) {
+		if ([package.section containsString:@"Theme"]) {
 
 			UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
 
 			newContentView.alpha = 0.1;
 
-		}		
+		}
 
-	} */
-
-}
-
-%new
-
-- (NSString *)deviceModelString {
-
-	struct utsname systemInfo;
-
-	uname(&systemInfo);
-
-	return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+	}
 
 }
 
@@ -583,7 +386,7 @@ enum ZBSourcesOrder {
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 8"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.9"]];
 
 	newLabel.numberOfLines = 2;
 
@@ -599,11 +402,84 @@ enum ZBSourcesOrder {
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.6"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.9"]];
 
 	newLabel.numberOfLines = 2;
 
 	newLabel.text = uniqueid;
+
+}
+
+%end
+
+%hook ZBPackageListTableViewController
+
+- (void)sharePackages {
+
+	if (enabled && betterexport) {
+
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zebra" message:@"What do you want to export?" preferredStyle:UIAlertControllerStyleAlert];
+
+	UIAlertAction *packages = [UIAlertAction actionWithTitle:@"Packages" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+
+		[self exportPackages];
+                        
+    }];
+
+	UIAlertAction *sources = [UIAlertAction actionWithTitle:@"Sources" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        
+		[self exportSources];
+
+    	}];
+
+		UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+		[alert addAction:cancel];
+		[alert addAction:packages];
+		[alert addAction:sources];
+		[self presentViewController:alert animated:YES completion:nil];
+
+	}
+
+	%orig;
+
+}
+
+%new
+
+- (void)exportPackages {
+
+	NSArray *packages = [[[%c(ZBDatabaseManager) sharedInstance] installedPackages] copy];
+	// NSArray *packages = [[self.databaseManager installedPackages] copy];
+    NSMutableArray *packageIds = [NSMutableArray new];
+    for (ZBPackage *package in packages) {
+        if (package.identifier) {
+            [packageIds addObject:package.identifier];
+        }
+    }
+    if ([packageIds count]) {
+        packageIds = [[packageIds sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)] mutableCopy];
+        NSString *fullList = [packageIds componentsJoinedByString:@"\n"];
+        NSArray *share = @[fullList];
+
+		UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:share applicationActivities:nil];
+        [self presentActivityController:controller];
+        
+    }
+
+	
+		
+}
+
+%new 
+
+- (void)exportSources {
+
+	NSString *lists = [@"/var/mobile/Library/Application Support/xyz.willy.Zebra" stringByAppendingPathComponent:@"sources.list"];
+
+	NSURL *url = [NSURL fileURLWithPath:lists];
+
+	UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:nil];
+    [self presentActivityController:controller];
 
 }
 
@@ -794,6 +670,8 @@ void loadColors() {
 	[preferences registerBool:&hideThemes default:YES forKey:@"hideThemes"];
 
 	[preferences registerBool:&useCommunityRepos default:YES forKey:@"useCommunityRepos"];
+
+	[preferences registerBool:&betterexport default:YES forKey:@"betterexport"];
 
 	loadColors();
 
