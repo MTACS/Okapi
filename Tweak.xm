@@ -114,7 +114,21 @@ enum ZBSourcesOrder {
 
 %end
 
-// Package Cells
+%hook ZBFeaturedCollectionViewCell
+
+- (void)viewDidLoad {
+
+	%orig;
+
+	UIImageView *featuredImageView = MSHookIvar<UIImageView *>(self, "_imageView");
+
+	featuredImageView.hidden = YES;
+
+}
+
+%end
+
+// Package & Repo Cells
 
 %hook ZBPackageTableViewCell
 

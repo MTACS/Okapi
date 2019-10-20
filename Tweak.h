@@ -17,6 +17,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <CoreSpotlight/CoreSpotlight.h>
 
+
 @interface ZBPackageTableViewCell : UITableViewCell {
     UIView *_backgroundContainerView;
     UIImageView *_iconImageView;
@@ -194,4 +195,9 @@
 
 @interface _SBFakeBlurView : UIView
 @property (assign,getter=isFullscreen,nonatomic) BOOL fullscreen; 
+@end
+
+@interface ZBFeaturedCollectionViewCell
+// @property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
+@property (nonatomic, assign, readwrite) UIImageView *imageView;
 @end
