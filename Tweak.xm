@@ -23,6 +23,7 @@ BOOL useCydiaIcons;
 BOOL hideThemes;
 BOOL useCommunityRepos;
 BOOL betterexport;
+BOOL darkRefresh;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
@@ -39,6 +40,26 @@ enum ZBSourcesOrder {
 %group Tweak
 
 // Custom tint color 
+
+%hook ZBRefreshViewController
+
+- (void)viewDidLoad {
+
+	%orig;
+
+	if (enabled && darkRefresh) {
+
+		self.view.backgroundColor = [UIColor blackColor];
+
+		UITextView *consoleTextView = MSHookIvar<UITextView *>(self, "_consoleView");
+
+		consoleTextView.backgroundColor = [UIColor blackColor];
+
+	}
+
+}
+
+%end
 
 %hook UITabBar
 
@@ -114,21 +135,49 @@ enum ZBSourcesOrder {
 
 %end
 
-%hook ZBFeaturedCollectionViewCell
+%hook UITableViewIndex
 
-- (void)viewDidLoad {
+- (id)initWithFrame:(CGRect)arg1 {
 
 	%orig;
 
-	UIImageView *featuredImageView = MSHookIvar<UIImageView *>(self, "_imageView");
+	if (enabled && ctintcolor) {
 
-	featuredImageView.hidden = YES;
+		UIColor *color = ctintcolorhex;
+
+		self.interactionTintColor = color;
+
+	}
+
+	return %orig;
+
+}
+
+- (BOOL)canBecomeFocused {
+
+	return true;
 
 }
 
 %end
 
 // Package & Repo Cells
+
+%hook ZBRepoTableViewCell
+
+- (void)viewDidLoad {
+
+	%orig;
+
+	ZBDatabaseManager *databaseManager = [%c(ZBDatabaseManager) sharedInstance];
+
+	ZBRepo *repo = [ZBRepo initWithOrigin:(id)arg1 description:(id)arg2 baseFileName:(id)arg3 baseURL:(id)arg4 secure:(_Bool)arg5 repoID:(int)arg6 iconURL:(id)arg7 isDefault:(_Bool)arg8 suite:(id)arg9 components:(id)arg10 shortURL:(id)arg11];
+
+	NSNumber *numberOfPackages = [NSNumber numberWithInt:[databaseManager numberOfPackagesInRepo:repo section:NULL]];
+
+}
+
+%end
 
 %hook ZBPackageTableViewCell
 
@@ -151,8 +200,6 @@ enum ZBSourcesOrder {
 		paid.hidden = YES;
 
 	}
-
-	
 
 }
 
@@ -686,6 +733,8 @@ void loadColors() {
 	[preferences registerBool:&useCommunityRepos default:YES forKey:@"useCommunityRepos"];
 
 	[preferences registerBool:&betterexport default:YES forKey:@"betterexport"];
+
+	[preferences registerBool:&darkRefresh default:YES forKey:@"darkRefresh"];
 
 	loadColors();
 

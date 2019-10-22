@@ -16,7 +16,7 @@
 #include <stddef.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <CoreSpotlight/CoreSpotlight.h>
-
+#import "/Users/daf/Documents/Tweaks/nepeta/axon/Prefs/NSTask.h"
 
 @interface ZBPackageTableViewCell : UITableViewCell {
     UIView *_backgroundContainerView;
@@ -193,11 +193,14 @@
 // @property (nonatomic,copy) SBSApplicationShortcutIcon * icon; 
 @end
 
-@interface _SBFakeBlurView : UIView
-@property (assign,getter=isFullscreen,nonatomic) BOOL fullscreen; 
+@interface UITableViewIndex : UIControl
+@property (nonatomic, strong, readwrite) UIColor *interactionTintColor;
 @end
 
-@interface ZBFeaturedCollectionViewCell
-// @property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
-@property (nonatomic, assign, readwrite) UIImageView *imageView;
+@interface ZBHomeTableViewController : UITableViewController {
+
+    UICollectionView *_newFeaturedCollection;
+
+}
+@property (nonatomic) __weak UICollectionView *newFeaturedCollection;
 @end
