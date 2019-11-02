@@ -16,7 +16,7 @@
 #include <stddef.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <CoreSpotlight/CoreSpotlight.h>
-#import "/Users/daf/Documents/Tweaks/nepeta/axon/Prefs/NSTask.h"
+#import "/Users/daf/Documents/Tweaks/noticelli/Prefs/NSTask.h"
 
 @interface ZBPackageTableViewCell : UITableViewCell {
     UIView *_backgroundContainerView;
@@ -195,12 +195,4 @@
 
 @interface UITableViewIndex : UIControl
 @property (nonatomic, strong, readwrite) UIColor *interactionTintColor;
-@end
-
-@interface ZBHomeTableViewController : UITableViewController {
-
-    UICollectionView *_newFeaturedCollection;
-
-}
-@property (nonatomic) __weak UICollectionView *newFeaturedCollection;
 @end

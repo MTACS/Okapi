@@ -39,11 +39,13 @@ enum ZBSourcesOrder {
 
 %group Tweak
 
-// Custom tint color 
+// Refresh View
 
 %hook ZBRefreshViewController
 
 - (void)viewDidLoad {
+
+
 
 	%orig;
 
@@ -60,6 +62,8 @@ enum ZBSourcesOrder {
 }
 
 %end
+
+// Tab Bar Icon labels and position
 
 %hook UITabBar
 
@@ -79,13 +83,15 @@ enum ZBSourcesOrder {
 
 %end
 
+// Navigation Bar Tint Colors
+
 %hook UINavigationBar
 
 - (void)setFrame:(CGRect)arg1 {
 
-	%orig;
+	%orig; 
 
-	if (enabled && ctintcolor) {
+	if (enabled && ctintcolor) { 
 
 		UIColor *color = ctintcolorhex;
 
@@ -96,6 +102,8 @@ enum ZBSourcesOrder {
 }
 
 %end
+
+// Global app progress view tint color
 
 %hook UIProgressView
 
@@ -114,6 +122,8 @@ enum ZBSourcesOrder {
 }
 
 %end
+
+// Install view tint button color
 
 %hook ZBConsoleViewController
 
@@ -134,6 +144,8 @@ enum ZBSourcesOrder {
 }
 
 %end
+
+// Table view side alphabet index tint color
 
 %hook UITableViewIndex
 
@@ -162,22 +174,6 @@ enum ZBSourcesOrder {
 %end
 
 // Package & Repo Cells
-
-%hook ZBRepoTableViewCell
-
-- (void)viewDidLoad {
-
-	%orig;
-
-	ZBDatabaseManager *databaseManager = [%c(ZBDatabaseManager) sharedInstance];
-
-	ZBRepo *repo = [ZBRepo initWithOrigin:(id)arg1 description:(id)arg2 baseFileName:(id)arg3 baseURL:(id)arg4 secure:(_Bool)arg5 repoID:(int)arg6 iconURL:(id)arg7 isDefault:(_Bool)arg8 suite:(id)arg9 components:(id)arg10 shortURL:(id)arg11];
-
-	NSNumber *numberOfPackages = [NSNumber numberWithInt:[databaseManager numberOfPackagesInRepo:repo section:NULL]];
-
-}
-
-%end
 
 %hook ZBPackageTableViewCell
 
@@ -311,6 +307,8 @@ enum ZBSourcesOrder {
 
 %end
 
+// Tab bar icon spacing
+
 %hook UITabBarButton
 
 - (void)layoutSubviews {
@@ -337,7 +335,7 @@ enum ZBSourcesOrder {
 
 %end
 
-// Homepage
+// Homepage cell icons
 
 %hook UITableViewCell
 
@@ -375,7 +373,7 @@ enum ZBSourcesOrder {
 
 %end
 
-// Badges
+// Badge tint color
 
 %hook _UIBadgeView
 
@@ -403,7 +401,7 @@ enum ZBSourcesOrder {
 
 %end
 
-// Separators
+// Clear separators
 
 %hook UITableView
 	
@@ -437,6 +435,8 @@ enum ZBSourcesOrder {
 	
 %end
 
+// Set Okapi build number at footer of Home view
+
 %hook ZBHomeTableViewController
 
 - (void)viewDidLoad {
@@ -447,7 +447,7 @@ enum ZBSourcesOrder {
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.9"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.0"]];
 
 	newLabel.numberOfLines = 2;
 
@@ -463,7 +463,7 @@ enum ZBSourcesOrder {
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.0.9"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.0"]];
 
 	newLabel.numberOfLines = 2;
 
@@ -472,6 +472,8 @@ enum ZBSourcesOrder {
 }
 
 %end
+
+// Better exportation of sources and packages
 
 %hook ZBPackageListTableViewController
 
@@ -546,7 +548,7 @@ enum ZBSourcesOrder {
 
 %end
 
-// Search
+// Clear search history
 
 %hook ZBSearchViewController
 
@@ -564,7 +566,7 @@ enum ZBSourcesOrder {
 
 %end
 
-// Console
+// Auto respring & delay
 
 %hook ZBConsoleViewController
 
@@ -588,7 +590,7 @@ enum ZBSourcesOrder {
 
 %end
 
-// Queue
+// Redesigned queue  
 
 %hook ZBQueueViewController 
 
@@ -629,6 +631,8 @@ enum ZBSourcesOrder {
 }
 
 %end
+
+// Queue popup view redesign
 
 %hook LNPopupBar
 
@@ -674,6 +678,8 @@ enum ZBSourcesOrder {
 
 %end
 
+// Load colors from libcolorpicker cells in preferences
+
 void loadColors() {
 
 	NSDictionary *colors = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapi.plist"];
@@ -700,11 +706,11 @@ void loadColors() {
 
 	[preferences registerBool:&tintBadges default:YES forKey:@"tintBadges"];
 
-	[preferences registerBool:&noSeparators default:YES forKey:@"tintBadges"];
+	[preferences registerBool:&noSeparators default:NO forKey:@"tintBadges"];
 
-	[preferences registerBool:&hidePaidIcon default:YES forKey:@"hidePaidIcon"];
+	[preferences registerBool:&hidePaidIcon default:NO forKey:@"hidePaidIcon"];
 
-	[preferences registerBool:&hideInstalledIcon default:YES forKey:@"hideInstalledIcon"];
+	[preferences registerBool:&hideInstalledIcon default:NO forKey:@"hideInstalledIcon"];
 
 	[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
 
@@ -720,7 +726,7 @@ void loadColors() {
 
 	[preferences registerFloat:&respringdelay default:0.0 forKey:@"respringdelay"];
 
-	[preferences registerBool:&autorespring default:YES forKey:@"autorespring"];
+	[preferences registerBool:&autorespring default:NO forKey:@"autorespring"];
 
 	[preferences registerBool:&hidesearches default:YES forKey:@"hidesearches"];
 
@@ -728,13 +734,13 @@ void loadColors() {
 
 	[preferences registerBool:&useCydiaIcons default:YES forKey:@"useCydiaIcons"];
 
-	[preferences registerBool:&hideThemes default:YES forKey:@"hideThemes"];
+	[preferences registerBool:&hideThemes default:NO forKey:@"hideThemes"];
 
 	[preferences registerBool:&useCommunityRepos default:YES forKey:@"useCommunityRepos"];
 
 	[preferences registerBool:&betterexport default:YES forKey:@"betterexport"];
 
-	[preferences registerBool:&darkRefresh default:YES forKey:@"darkRefresh"];
+	[preferences registerBool:&darkRefresh default:NO forKey:@"darkRefresh"];
 
 	loadColors();
 
