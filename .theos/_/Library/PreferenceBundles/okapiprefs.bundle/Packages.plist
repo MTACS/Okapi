@@ -22,9 +22,27 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSGroupCell</string>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
 			<key>label</key>
-			<string>Package sections to hide</string>
+			<string>Set title to # of packages</string>
+			<key>key</key>
+			<string>showPackageNumber</string>
+			<key>alternateColors</key>
+			<true/>
+			<key>PostNotification</key>
+			<string>com.mtac.okapi/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerAlignment</key>
+			<string>1</string>
+			<key>footerText</key>
+			<string>'Use Cydia section icons' may not work on the Packages page as of Zebra 1.0~beta24. A future update will fix this</string>
 		</dict>
 		<dict>
 			<key>cell</key>

@@ -137,6 +137,7 @@
 @property(retain, nonatomic) NSString *section;
 @property(retain, nonatomic) ZBRepo *repo;
 @property(retain, nonatomic) NSString *identifier;
+@property(nonatomic, strong) NSString *sectionImageName;
 @end
 
 @interface ZBRepo : NSObject
@@ -178,7 +179,7 @@
 @class NSMutableArray, NSString, ZBDownloadManager;
 @interface ZBDatabaseManager : NSObject
 + (id)sharedInstance;
-- (id)installedPackages;
+- (id)installedPackages:(_Bool)arg1;
 @end
 
 @interface SBUIAppIconForceTouchControllerDataProvider : NSObject
@@ -195,4 +196,8 @@
 
 @interface UITableViewIndex : UIControl
 @property (nonatomic, strong, readwrite) UIColor *interactionTintColor;
+@end
+
+@interface _UIBarBackgroundTopCurtainView : UIView
+@property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
 @end

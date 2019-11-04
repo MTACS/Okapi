@@ -7,7 +7,6 @@
 HBPreferences *preferences;
 BOOL enabled;
 BOOL hideTabBarLabels;
-BOOL centerIcons;
 BOOL tintBadges;
 BOOL noSeparators;
 BOOL hidePaidIcon;
@@ -24,6 +23,7 @@ BOOL hideThemes;
 BOOL useCommunityRepos;
 BOOL betterexport;
 BOOL darkRefresh;
+BOOL showPackageNumber;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
@@ -44,8 +44,6 @@ enum ZBSourcesOrder {
 %hook ZBRefreshViewController
 
 - (void)viewDidLoad {
-
-
 
 	%orig;
 
@@ -177,31 +175,13 @@ enum ZBSourcesOrder {
 
 %hook ZBPackageTableViewCell
 
-- (void)layoutSubviews { // Sets package cells
-
-	%orig;
-
-	if (enabled && hideInstalledIcon) {
-
-		UIImageView *installed = MSHookIvar<UIImageView *>(self, "_isInstalledImageView");
-
-		installed.hidden = YES;
-
-	}
-
-	if (enabled && hidePaidIcon) {
-
-		UIImageView *paid = MSHookIvar<UIImageView *>(self, "_isPaidImageView");
-
-		paid.hidden = YES;
-
-	}
-
-}
+NSString *currentSection = nil;
 
 - (void)updateData:(ZBPackage *)package {
 
 	%orig;
+
+	NSLog(@"%@", [@"OKAPI:" stringByAppendingString:package.sectionImageName]);
 
 	if (enabled && useCydiaIcons) {
 
@@ -211,33 +191,83 @@ enum ZBSourcesOrder {
 
 		UIImage *iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:sectionString ofType:@"png"]];
 
-		UIImageView *newIconImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
+		UIImageView *packageCellImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
 
-		if (iconImage == nil) {
+		UIImage *staticIconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
 
-			UIImage *staticIconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
+		if (iconImage != nil) {
 
-			newIconImageView.image = staticIconImage;
+			packageCellImageView.image = iconImage;
+
+			//[self imageView];
 
 		} else {
 
-			newIconImageView.image = iconImage;
+			//UIImageView *packageCellImageView = MSHookIvar<UIImageView *>(self, "_imageView");
 
-		}
-		
-	}
+			packageCellImageView.image = staticIconImage;
 
-	if (enabled && hideThemes) {
-
-		if ([package.section containsString:@"Theme"]) {
-
-			UIView *newContentView = MSHookIvar<UIView *>(self, "_contentView");
-
-			newContentView.alpha = 0.1;
+			//[self imageView];
 
 		}
 
 	}
+
+}
+
+- (UIImageView *)imageView {
+
+	NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
+
+	UIImage *iconImage = nil;
+
+	if (currentSection != nil) {
+
+		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:currentSection ofType:@"png"]];
+
+	} else {
+
+		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
+
+	}
+
+	UIImageView *imageCellView = [[UIImageView alloc] initWithImage:iconImage];
+
+	//UIImage *staticIconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
+
+	if (enabled && useCydiaIcons) {
+	
+		return imageCellView;
+
+	}
+
+	return %orig;
+
+}
+
+- (id)image {
+
+	NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
+
+	UIImage *iconImage = nil;
+	
+	if (currentSection != nil) {
+
+		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:currentSection ofType:@"png"]];
+
+	} else {
+
+		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
+
+	}
+
+	if (enabled && useCydiaIcons) {
+
+		return iconImage;
+
+	}
+
+	return %orig;
 
 }
 
@@ -315,7 +345,7 @@ enum ZBSourcesOrder {
 
 	%orig;
 
-	if (enabled && centerIcons) {
+	if (enabled && hideTabBarLabels) {
 
 		NSString *deviceType = [[UIDevice currentDevice] model];
 
@@ -419,22 +449,6 @@ enum ZBSourcesOrder {
 	
 %end
 
-%hook SBSeparatorView
-	
-- (void)layoutSubviews {
-
-	%orig;
-
-	if (enabled && noSeparators) {
-
-		self.backgroundColor = [UIColor clearColor];
-
-	}
-
-}
-	
-%end
-
 // Set Okapi build number at footer of Home view
 
 %hook ZBHomeTableViewController
@@ -447,7 +461,7 @@ enum ZBSourcesOrder {
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.0"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.1"]];
 
 	newLabel.numberOfLines = 2;
 
@@ -463,11 +477,97 @@ enum ZBSourcesOrder {
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.0"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.1"]];
 
 	newLabel.numberOfLines = 2;
 
 	newLabel.text = uniqueid;
+
+}
+
+- (void)configureFooter {
+
+	%orig;
+
+	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
+
+	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
+
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.1"]];
+
+	newLabel.numberOfLines = 2;
+
+	newLabel.text = uniqueid;
+
+}
+
+%end
+
+// Featured package cells 
+
+%hook ZBFeaturedCollectionViewCell
+
+- (void)awakeFromNib {
+
+	%orig;
+
+	NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
+
+	UIImageView *newImageView = MSHookIvar<UIImageView *>(self, "_imageView");
+
+	UIImage *iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
+
+	newImageView.image = iconImage;
+
+}
+
+%end
+
+// # of packages title
+
+%hook _UINavigationBarLargeTitleView
+
+- (void)setTitle:(NSString *)arg1 {
+
+	/* ZBTabBarController *tabBarController = [[%c(ZBTabBarController) alloc] init];
+
+	UITabBar *tabBar = MSHookIvar<UITabBar *>(tabBarController, "_tabBar");
+
+	UITabBarItem *selectedBarItem = MSHookIvar<UITabBarItem *>(tabBar, "_selectedItem");
+
+	NSArray *tabBarItems = MSHookIvar<NSArray *>(tabBar, "_items");
+
+	if (selectedBarItem == tabBarItems[4]) {
+
+		NSMutableArray *newInstalledPackagesList = [[%c(ZBDatabaseManager) sharedInstance] installedPackages:YES];
+
+		int packages = [newInstalledPackagesList count];
+
+		%orig([NSString stringWithFormat:@"%d", packages]);
+
+	} else {
+
+		%orig;
+
+	} */
+
+	if (enabled && showPackageNumber) {
+
+		if ([arg1 isEqualToString:NSLocalizedString(@"Packages", @"")]) {
+
+			NSMutableArray *newInstalledPackagesList = [[%c(ZBDatabaseManager) sharedInstance] installedPackages:YES];
+
+			int packages = [newInstalledPackagesList count];
+
+			%orig([[[NSString stringWithFormat:@"%d", packages] stringByAppendingString:@" "] stringByAppendingString:NSLocalizedString(@"Packages", @"")]);
+
+		} 
+
+	} else {
+
+		%orig;
+
+	}
 
 }
 
@@ -481,17 +581,17 @@ enum ZBSourcesOrder {
 
 	if (enabled && betterexport) {
 
-	UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zebra" message:@"What do you want to export?" preferredStyle:UIAlertControllerStyleAlert];
+		UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zebra" message:@"What do you want to export?" preferredStyle:UIAlertControllerStyleAlert];
 
-	UIAlertAction *packages = [UIAlertAction actionWithTitle:@"Packages" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+		UIAlertAction *packages = [UIAlertAction actionWithTitle:@"Packages" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 
-		[self exportPackages];
+			[self exportPackages];
                         
-    }];
+    	}];
 
-	UIAlertAction *sources = [UIAlertAction actionWithTitle:@"Sources" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+		UIAlertAction *sources = [UIAlertAction actionWithTitle:@"Sources" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         
-		[self exportSources];
+			[self exportSources];
 
     	}];
 
@@ -511,25 +611,19 @@ enum ZBSourcesOrder {
 
 - (void)exportPackages {
 
-	NSArray *packages = [[[%c(ZBDatabaseManager) sharedInstance] installedPackages] copy];
-	// NSArray *packages = [[self.databaseManager installedPackages] copy];
-    NSMutableArray *packageIds = [NSMutableArray new];
-    for (ZBPackage *package in packages) {
-        if (package.identifier) {
-            [packageIds addObject:package.identifier];
-        }
-    }
-    if ([packageIds count]) {
-        packageIds = [[packageIds sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)] mutableCopy];
-        NSString *fullList = [packageIds componentsJoinedByString:@"\n"];
-        NSArray *share = @[fullList];
+	NSMutableArray *newInstalledPackagesList = [[%c(ZBDatabaseManager) sharedInstance] installedPackages:YES];
+
+	if ([newInstalledPackagesList count]) {
+
+		NSString *fullList = [newInstalledPackagesList componentsJoinedByString:@"\n"];
+
+		NSArray *share = @[fullList];
 
 		UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:share applicationActivities:nil];
-        [self presentActivityController:controller];
-        
-    }
 
-	
+		[self presentActivityController:controller];
+
+	}
 		
 }
 
@@ -575,12 +669,6 @@ enum ZBSourcesOrder {
     %orig;
 
 	if (enabled && autorespring) {
-
-		if (respringdelay > 0) {
-
-			sleep(respringdelay);
-
-		}
 
 		[self.completeButton sendActionsForControlEvents:UIControlEventTouchUpInside];
 
@@ -634,7 +722,7 @@ enum ZBSourcesOrder {
 
 // Queue popup view redesign
 
-%hook LNPopupBar
+/* %hook LNPopupBar
 
 - (void)layoutSubviews {
 
@@ -674,7 +762,7 @@ enum ZBSourcesOrder {
 
 }
 
-%end
+%end */
 
 %end
 
@@ -701,8 +789,6 @@ void loadColors() {
 	[preferences registerBool:&enabled default:YES forKey:@"Enabled"];
 
 	[preferences registerBool:&hideTabBarLabels default:YES forKey:@"hideTabBarLabels"]; 
-
-	[preferences registerBool:&centerIcons default:YES forKey:@"centerIcons"];
 
 	[preferences registerBool:&tintBadges default:YES forKey:@"tintBadges"];
 
@@ -741,6 +827,8 @@ void loadColors() {
 	[preferences registerBool:&betterexport default:YES forKey:@"betterexport"];
 
 	[preferences registerBool:&darkRefresh default:NO forKey:@"darkRefresh"];
+	
+	[preferences registerBool:&showPackageNumber default:NO forKey:@"showPackageNumber"];
 
 	loadColors();
 
