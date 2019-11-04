@@ -144,7 +144,7 @@
 			<key>label</key>
 			<string>Donate</string>
 			<key>subtitle</key>
-			<string>☕️</string>
+			<string>Buy me a coffee</string>
 			<key>url</key>
 			<string>https://paypal.me/mtac</string>
 		</dict>
@@ -215,7 +215,7 @@
 			<key>footerAlignment</key>
 			<string>1</string>
 			<key>footerText</key>
-			<string>Okapi 1.1.1</string>
+			<string>Okapi 1.1.2</string>
 		</dict>
 		<dict>
 			<key>cell</key>

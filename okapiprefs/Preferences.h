@@ -15,6 +15,7 @@
 @property (nonatomic, retain) UIImageView *headerImageView;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UIImageView *iconView;
+@property (nonatomic, retain) NSArray *versionArray;
 @end
 
 @interface PackageSettingsListController: HBRootListController {

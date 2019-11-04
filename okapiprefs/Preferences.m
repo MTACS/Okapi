@@ -297,6 +297,7 @@
 
 @implementation PreferencesListController
 @synthesize killButton;
+@synthesize versionArray;
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
@@ -376,6 +377,8 @@
 
     [super viewDidLoad];
 
+	[self checkForUpdate];
+
     self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0,0,200,200)];
     self.headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,200,200)];
     self.headerImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -444,6 +447,48 @@
 	pid_t pid;
     const char* args[] = {"killall", "Zebra", NULL};
     posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
+
+}
+
+- (void)checkForUpdate {
+
+	NSError *err;
+
+	NSString *urlString = [NSString stringWithFormat:@"https://mtac.app/api/okapi.json"];
+
+	NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlString]];
+
+	NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
+
+	NSString *version = [json objectForKey:@"version"];
+
+	NSString *strippedVersion = [version stringByReplacingOccurrencesOfString:@"." withString:@""];
+
+	NSInteger versionNumber = [strippedVersion integerValue];
+
+	if (112 < versionNumber) {
+
+		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+						   message:[NSString stringWithFormat:@"Okapi %@ is available", version]
+                           preferredStyle:UIAlertControllerStyleAlert];
+
+    	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Open in Zebra" style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction *action){
+
+								   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"zbra://packages/com.mtac.okapi"]];
+
+							   }];
+
+		UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                               handler:nil];
+
+		[alert addAction:defaultAction];
+
+		[alert addAction:cancelAction];
+
+		[self presentViewController:alert animated:YES completion:nil];
+
+	}
 
 }
 
