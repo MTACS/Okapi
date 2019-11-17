@@ -171,7 +171,6 @@
 @interface ZBPackageListTableViewController : ZBRefreshableTableViewController <UIViewControllerPreviewingDelegate>
 - (void)sharePackages;
 - (void)presentActivityController:(id)arg1;
-- (void)exportPackages;
 - (void)exportSources;
 @property(readonly) Class superclass;
 @end

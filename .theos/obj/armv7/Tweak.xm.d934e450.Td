@@ -1,5 +1,5 @@
-/Users/daf/Documents/Tweaks/okapi/.theos/obj/arm64/Tweak.xm.fda87a44.o: \
-  /Users/daf/Documents/Tweaks/okapi/.theos/obj/arm64/Tweak.xm.mm \
+/Users/daf/Documents/Tweaks/okapi/.theos/obj/armv7/Tweak.xm.d934e450.o: \
+  /Users/daf/Documents/Tweaks/okapi/.theos/obj/armv7/Tweak.xm.mm \
   /Users/daf/theos/Prefix.pch \
   /Users/daf/theos/vendor/include/_Prefix/BackwardsCompat.h \
   /Users/daf/theos/vendor/include/_Prefix/IOSMacros.h \

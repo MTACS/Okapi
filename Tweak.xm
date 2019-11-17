@@ -453,7 +453,7 @@ NSString *currentSection = nil;
 
 %hook ZBHomeTableViewController
 
-- (void)viewDidLoad {
+/* - (void)viewDidLoad {
 
 	%orig;
 
@@ -467,9 +467,9 @@ NSString *currentSection = nil;
 
 	newLabel.text = uniqueid;
 
-}
+} */
 
-- (void)toggleDarkMode:(id)arg1 {
+/* - (void)toggleDarkMode:(id)arg1 {
 
 	%orig;
 
@@ -483,7 +483,7 @@ NSString *currentSection = nil;
 
 	newLabel.text = uniqueid;
 
-}
+} */
 
 - (void)configureFooter {
 
@@ -493,13 +493,29 @@ NSString *currentSection = nil;
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.1"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.3"]];
 
 	newLabel.numberOfLines = 2;
 
 	newLabel.text = uniqueid;
 
 }
+
+/* - (void)viewWillAppear:(_Bool)arg1 {
+
+	%orig;
+
+	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
+
+	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
+
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.2"]];
+
+	newLabel.numberOfLines = 2;
+
+	newLabel.text = uniqueid;
+
+} */
 
 %end
 
@@ -585,7 +601,9 @@ NSString *currentSection = nil;
 
 		UIAlertAction *packages = [UIAlertAction actionWithTitle:@"Packages" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 
-			[self exportPackages];
+			// [self exportPackages];
+
+			%orig;
                         
     	}];
 
@@ -605,26 +623,6 @@ NSString *currentSection = nil;
 
 	%orig;
 
-}
-
-%new
-
-- (void)exportPackages {
-
-	NSMutableArray *newInstalledPackagesList = [[%c(ZBDatabaseManager) sharedInstance] installedPackages:YES];
-
-	if ([newInstalledPackagesList count]) {
-
-		NSString *fullList = [newInstalledPackagesList componentsJoinedByString:@"\n"];
-
-		NSArray *share = @[fullList];
-
-		UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:share applicationActivities:nil];
-
-		[self presentActivityController:controller];
-
-	}
-		
 }
 
 %new 
@@ -660,7 +658,7 @@ NSString *currentSection = nil;
 
 %end
 
-// Auto respring & delay
+// Auto respring
 
 %hook ZBConsoleViewController
 
@@ -720,8 +718,6 @@ NSString *currentSection = nil;
 
 %end
 
-// Queue popup view redesign
-
 /* %hook LNPopupBar
 
 - (void)layoutSubviews {
@@ -753,12 +749,6 @@ NSString *currentSection = nil;
 		[self setImage:dliv.image];
 
 	}
-
-	UILongPressGestureRecognizer *longpress = [[UILongPressGestureRecognizer alloc] initWithTarget:[%c(ZBQueue) sharedInstance] action:@selector(clearQueue)];
-
-	longpress.minimumPressDuration = 1.0;
-
-	[self addGestureRecognizer:longpress];
 
 }
 

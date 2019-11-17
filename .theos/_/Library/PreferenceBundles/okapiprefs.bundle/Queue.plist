@@ -19,6 +19,8 @@
 			<true/>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/ReloadPrefs</string>
+			<key>enabled</key>
+			<false/>
 		</dict>
 		<dict>
 			<key>cell</key>

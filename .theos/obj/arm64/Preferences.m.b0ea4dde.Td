@@ -1,4 +1,4 @@
-/Users/daf/Documents/Tweaks/okapi/.theos/obj/armv7/Preferences.m.a285c894.o: \
+/Users/daf/Documents/Tweaks/okapi/.theos/obj/arm64/Preferences.m.b0ea4dde.o: \
   Preferences.m /Users/daf/theos/Prefix.pch \
   /Users/daf/theos/vendor/include/_Prefix/BackwardsCompat.h \
   /Users/daf/theos/vendor/include/_Prefix/IOSMacros.h \
