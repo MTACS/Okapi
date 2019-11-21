@@ -15,8 +15,6 @@
 #include <stdio.h>
 #include <stddef.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <CoreSpotlight/CoreSpotlight.h>
-#import "/Users/daf/Documents/Tweaks/noticelli/Prefs/NSTask.h"
 
 @interface ZBPackageTableViewCell : UITableViewCell {
     UIView *_backgroundContainerView;
@@ -199,4 +197,8 @@
 
 @interface _UIBarBackgroundTopCurtainView : UIView
 @property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
+@end
+
+@interface ZBAppDelegate : UIResponder
+@property(retain, nonatomic) UIWindow *window;
 @end

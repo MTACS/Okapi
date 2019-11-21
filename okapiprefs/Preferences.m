@@ -137,7 +137,7 @@
 	return _specifiers;
 }
 
-- (instancetype)init { // Thanks Nepeta
+- (instancetype)init {
 
 	self = [super init];
 

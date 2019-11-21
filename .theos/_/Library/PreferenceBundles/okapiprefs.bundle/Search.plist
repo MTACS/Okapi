@@ -20,7 +20,7 @@
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/ReloadPrefs</string>
 		</dict>
-		<dict>
+		<!--<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -35,7 +35,7 @@
 			<true/>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/ReloadPrefs</string>
-		</dict>
+		</dict>-->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>

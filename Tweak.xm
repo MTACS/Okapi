@@ -22,8 +22,6 @@ BOOL useCydiaIcons;
 BOOL hideThemes;
 BOOL useCommunityRepos;
 BOOL betterexport;
-BOOL darkRefresh;
-BOOL showPackageNumber;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
@@ -39,23 +37,19 @@ enum ZBSourcesOrder {
 
 %group Tweak
 
-// Refresh View
+// iOS 13 dark mode fix
 
-%hook ZBRefreshViewController
+%hook ZBAppDelegate
 
-- (void)viewDidLoad {
+- (BOOL)application:(id)arg1 didFinishLaunchingWithOptions:(id)arg2 {
 
-	%orig;
-
-	if (enabled && darkRefresh) {
-
-		self.view.backgroundColor = [UIColor blackColor];
-
-		UITextView *consoleTextView = MSHookIvar<UITextView *>(self, "_consoleView");
-
-		consoleTextView.backgroundColor = [UIColor blackColor];
+	if (@available(iOS 13.0, *)) {
+		
+		[[[UIApplication sharedApplication] delegate].window setOverrideUserInterfaceStyle:1];
 
 	}
+
+	return %orig;
 
 }
 
@@ -111,9 +105,9 @@ enum ZBSourcesOrder {
 
 	if (enabled && ctintcolor) {
 
-		UIColor *color = ctintcolorhex;
+		// UIColor *color = ctintcolorhex;
 
-		self.progressTintColor = color;
+		self.progressTintColor = ctintcolorhex;
 
 	}
 
@@ -131,11 +125,11 @@ enum ZBSourcesOrder {
 
 	if (enabled && ctintcolor) {
 
-		UIColor *color = ctintcolorhex;
+		// UIColor *color = ctintcolorhex;
 
 		UIButton *finishButton = MSHookIvar<UIButton *>(self, "_completeButton");
 
-		finishButton.backgroundColor = color;
+		finishButton.backgroundColor = ctintcolorhex;
 
 	}
 
@@ -153,19 +147,13 @@ enum ZBSourcesOrder {
 
 	if (enabled && ctintcolor) {
 
-		UIColor *color = ctintcolorhex;
+		// UIColor *color = ctintcolorhex;
 
-		self.interactionTintColor = color;
+		self.interactionTintColor = ctintcolorhex;
 
 	}
 
 	return %orig;
-
-}
-
-- (BOOL)canBecomeFocused {
-
-	return true;
 
 }
 
@@ -181,13 +169,11 @@ NSString *currentSection = nil;
 
 	%orig;
 
-	NSLog(@"%@", [@"OKAPI:" stringByAppendingString:package.sectionImageName]);
-
 	if (enabled && useCydiaIcons) {
 
 		NSString *sectionString = package.section;
 
-		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
+		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Applications/Cydia.app/Sections"];
 
 		UIImage *iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:sectionString ofType:@"png"]];
 
@@ -199,15 +185,9 @@ NSString *currentSection = nil;
 
 			packageCellImageView.image = iconImage;
 
-			//[self imageView];
-
 		} else {
 
-			//UIImageView *packageCellImageView = MSHookIvar<UIImageView *>(self, "_imageView");
-
 			packageCellImageView.image = staticIconImage;
-
-			//[self imageView];
 
 		}
 
@@ -232,8 +212,6 @@ NSString *currentSection = nil;
 	}
 
 	UIImageView *imageCellView = [[UIImageView alloc] initWithImage:iconImage];
-
-	//UIImage *staticIconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
 
 	if (enabled && useCydiaIcons) {
 	
@@ -299,20 +277,21 @@ NSString *currentSection = nil;
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             if ([json objectForKey:@"repos"]) {
 
-				// NSArray *newCommunityRepos = MSHookIvar<NSArray *>(self, "_communityRepos");
-
 				self.communityRepos = json[@"repos"];
             	
-            }
-              // self->changeLogArray = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-              dispatch_async(dispatch_get_main_queue(), ^{
+            } dispatch_async(dispatch_get_main_queue(), ^{
                   [self.tableView reloadData];
-              });
-          }
-          if (error){
-              NSLog(@"[Zebra] Github error %@", error);
-          }
-      }] resume];
+            });
+
+        }
+
+        if (error){
+
+            NSLog(@"[Zebra] Github error %@", error);
+
+        }
+
+    }] resume];
     
 }
 
@@ -393,7 +372,9 @@ NSString *currentSection = nil;
 
 	if (enabled && homecells) {
 
-		return NULL;
+		// return NULL;
+
+		return nil;
 
 	}
 
@@ -415,9 +396,9 @@ NSString *currentSection = nil;
 
 		if (ctintcolor) {
 
-			UIColor *color = ctintcolorhex;
+			// UIColor *color = ctintcolorhex;
 
-			self.backgroundColor = color;
+			self.backgroundColor = ctintcolorhex;
 
 		} else {
 
@@ -453,38 +434,6 @@ NSString *currentSection = nil;
 
 %hook ZBHomeTableViewController
 
-/* - (void)viewDidLoad {
-
-	%orig;
-
-	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
-
-	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
-
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.2"]];
-
-	newLabel.numberOfLines = 2;
-
-	newLabel.text = uniqueid;
-
-} */
-
-/* - (void)toggleDarkMode:(id)arg1 {
-
-	%orig;
-
-	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
-
-	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
-
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.2"]];
-
-	newLabel.numberOfLines = 2;
-
-	newLabel.text = uniqueid;
-
-} */
-
 - (void)configureFooter {
 
 	%orig;
@@ -493,97 +442,11 @@ NSString *currentSection = nil;
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.3"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.4"]];
 
 	newLabel.numberOfLines = 2;
 
 	newLabel.text = uniqueid;
-
-}
-
-/* - (void)viewWillAppear:(_Bool)arg1 {
-
-	%orig;
-
-	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
-
-	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
-
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.2"]];
-
-	newLabel.numberOfLines = 2;
-
-	newLabel.text = uniqueid;
-
-} */
-
-%end
-
-// Featured package cells 
-
-%hook ZBFeaturedCollectionViewCell
-
-- (void)awakeFromNib {
-
-	%orig;
-
-	NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
-
-	UIImageView *newImageView = MSHookIvar<UIImageView *>(self, "_imageView");
-
-	UIImage *iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
-
-	newImageView.image = iconImage;
-
-}
-
-%end
-
-// # of packages title
-
-%hook _UINavigationBarLargeTitleView
-
-- (void)setTitle:(NSString *)arg1 {
-
-	/* ZBTabBarController *tabBarController = [[%c(ZBTabBarController) alloc] init];
-
-	UITabBar *tabBar = MSHookIvar<UITabBar *>(tabBarController, "_tabBar");
-
-	UITabBarItem *selectedBarItem = MSHookIvar<UITabBarItem *>(tabBar, "_selectedItem");
-
-	NSArray *tabBarItems = MSHookIvar<NSArray *>(tabBar, "_items");
-
-	if (selectedBarItem == tabBarItems[4]) {
-
-		NSMutableArray *newInstalledPackagesList = [[%c(ZBDatabaseManager) sharedInstance] installedPackages:YES];
-
-		int packages = [newInstalledPackagesList count];
-
-		%orig([NSString stringWithFormat:@"%d", packages]);
-
-	} else {
-
-		%orig;
-
-	} */
-
-	if (enabled && showPackageNumber) {
-
-		if ([arg1 isEqualToString:NSLocalizedString(@"Packages", @"")]) {
-
-			NSMutableArray *newInstalledPackagesList = [[%c(ZBDatabaseManager) sharedInstance] installedPackages:YES];
-
-			int packages = [newInstalledPackagesList count];
-
-			%orig([[[NSString stringWithFormat:@"%d", packages] stringByAppendingString:@" "] stringByAppendingString:NSLocalizedString(@"Packages", @"")]);
-
-		} 
-
-	} else {
-
-		%orig;
-
-	}
 
 }
 
@@ -600,8 +463,6 @@ NSString *currentSection = nil;
 		UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zebra" message:@"What do you want to export?" preferredStyle:UIAlertControllerStyleAlert];
 
 		UIAlertAction *packages = [UIAlertAction actionWithTitle:@"Packages" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-
-			// [self exportPackages];
 
 			%orig;
                         
@@ -680,32 +541,26 @@ NSString *currentSection = nil;
 
 %hook ZBQueueViewController 
 
-- (void)confirm:(id)arg1 {
+- (void)confirm:(id)arg1 { // Requires NSFaceIDUsageDescription to be set in Zebra's Info.plist 
 
 	if (enabled && confirmfaceid) {
 
 		@autoreleasepool {
 		LAContext *context = [[LAContext alloc] init];
-		[context evaluatePolicy:policy
-			localizedReason:LocalizedString(@"Authentication is required")
-			reply:^(BOOL success, NSError *error) {
-				if (success || (error && ((error.code == LAErrorPasscodeNotSet) ||
-					(
-						(policy == LAPolicyDeviceOwnerAuthenticationWithBiometrics) && (
-							(error.code == LAErrorTouchIDNotAvailable) ||
-							(error.code == LAErrorTouchIDNotEnrolled)
-						)
-					)
-				))) {
+		[context evaluatePolicy:policy localizedReason:LocalizedString(@"Authentication is required") reply:^(BOOL success, NSError *error) {
+				
+			if (success || (error && ((error.code == LAErrorPasscodeNotSet) || ((policy == LAPolicyDeviceOwnerAuthenticationWithBiometrics) && ((error.code == LAErrorTouchIDNotAvailable) || (error.code == LAErrorTouchIDNotEnrolled)))))) {
 		
-						dispatch_sync(dispatch_get_main_queue(), ^{
+				dispatch_sync(dispatch_get_main_queue(), ^{
 
 							%orig;
 
 						});
 					}
+
 				}
 			];
+
 		}
 
 	} else {
@@ -717,42 +572,6 @@ NSString *currentSection = nil;
 }
 
 %end
-
-/* %hook LNPopupBar
-
-- (void)layoutSubviews {
-
-	%orig;
-
-	if (enabled && redesignedQueue) {
-
-		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/PreferenceBundles/okapiprefs.bundle"];
-
-		UILabel *newSubtitle = MSHookIvar<UILabel *>(self, "_subtitleLabel");
-
-		newSubtitle.hidden = YES;
-
-		UILabel *newTitle = MSHookIvar<UILabel *>(self, "_titleLabel");
-
-		CGPoint newCenter = newTitle.center;
-
-		newCenter.y = 33;
-
-		newTitle.center = newCenter;
-
-		UIImageView *dliv = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"arrow" ofType:@"png"]]];
-
-		dliv.image = [dliv.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-
-		[dliv setTintColor:[UIColor tintColor]];
-
-		[self setImage:dliv.image];
-
-	}
-
-}
-
-%end */
 
 %end
 
@@ -775,50 +594,26 @@ void loadColors() {
 %ctor {
 
 	preferences = [[HBPreferences alloc] initWithIdentifier:@"com.mtac.okapi"];
-
 	[preferences registerBool:&enabled default:YES forKey:@"Enabled"];
-
 	[preferences registerBool:&hideTabBarLabels default:YES forKey:@"hideTabBarLabels"]; 
-
 	[preferences registerBool:&tintBadges default:YES forKey:@"tintBadges"];
-
 	[preferences registerBool:&noSeparators default:NO forKey:@"tintBadges"];
-
 	[preferences registerBool:&hidePaidIcon default:NO forKey:@"hidePaidIcon"];
-
 	[preferences registerBool:&hideInstalledIcon default:NO forKey:@"hideInstalledIcon"];
-
 	[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
-
 	[preferences registerBool:&homecells default:YES forKey:@"homecells"];
-
 	[preferences registerBool:&redesignedQueue default:YES forKey:@"redesignedQueue"];
-
 	[preferences registerBool:&ctintcolor default:YES forKey:@"ctintcolor"];
-
 	[preferences registerObject:&ctintcolorhex default:nil forKey:@"ctintcolorhex"];
-
 	[preferences registerFloat:&pcellframe default:0.0 forKey:@"pcellframe"];
-
 	[preferences registerFloat:&respringdelay default:0.0 forKey:@"respringdelay"];
-
 	[preferences registerBool:&autorespring default:NO forKey:@"autorespring"];
-
 	[preferences registerBool:&hidesearches default:YES forKey:@"hidesearches"];
-
 	[preferences registerBool:&confirmfaceid default:YES forKey:@"confirmfaceid"];
-
 	[preferences registerBool:&useCydiaIcons default:YES forKey:@"useCydiaIcons"];
-
 	[preferences registerBool:&hideThemes default:NO forKey:@"hideThemes"];
-
 	[preferences registerBool:&useCommunityRepos default:YES forKey:@"useCommunityRepos"];
-
 	[preferences registerBool:&betterexport default:YES forKey:@"betterexport"];
-
-	[preferences registerBool:&darkRefresh default:NO forKey:@"darkRefresh"];
-	
-	[preferences registerBool:&showPackageNumber default:NO forKey:@"showPackageNumber"];
 
 	loadColors();
 
