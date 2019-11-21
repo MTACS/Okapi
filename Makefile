@@ -1,14 +1,16 @@
-# export SYSROOT = $(THEOS)/sdks/iPhoneOS11.2.sdk
+THEOS_DEVICE_IP = 10.0.0.25
 
-THEOS_DEVICE_IP = 192.168.1.22
+ARCHS = armv7 arm64 arm64e 
 
-ARCHS = arm64
+DEBUG = 0
 
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Okapi
 Okapi_FILES = Tweak.xm
-Okapi_EXTRA_FRAMEWORKS = Cephei
+Okapi_EXTRA_FRAMEWORKS += Cephei
+Okapi_LIBRARIES = colorpicker
+Okapi_FRAMEWORKS = UIKit
 
 BUNDLE_NAME = com.mtac.okapi
 com.mtac.okapi_INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries

@@ -15,6 +15,63 @@
 @property (nonatomic, retain) UIImageView *headerImageView;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UIImageView *iconView;
+@property (nonatomic, retain) NSArray *versionArray;
+@end
+
+@interface PackageSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface AppSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface HomeSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface ExperimentalSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface QueueSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface SearchSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
+@end
+
+@interface ConsoleSettingsListController: HBRootListController {
+
+    UITableView * _table;
+
+}
+@property (nonatomic, retain) UILabel *titleLabel;
 @end
 
 // Thanks Nepeta
