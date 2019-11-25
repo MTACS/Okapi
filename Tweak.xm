@@ -9,23 +9,19 @@ BOOL enabled;
 BOOL hideTabBarLabels;
 BOOL tintBadges;
 BOOL noSeparators;
-BOOL hidePaidIcon;
-BOOL hideInstalledIcon;
-BOOL hidePackageIcons;
 BOOL homecells;
-BOOL redesignedQueue;
 BOOL ctintcolor;
 BOOL autorespring;
 BOOL hidesearches;
 BOOL confirmfaceid;
 BOOL useCydiaIcons;
-BOOL hideThemes;
 BOOL useCommunityRepos;
 BOOL betterexport;
+BOOL tintRefreshControl;
 UIColor *ctintcolorhex = nil;
 CGFloat pcellframe;
 CGFloat respringdelay;
-LAPolicy policy;
+//LAPolicy policy;
 NSArray *moreRepos;
 
 enum ZBSourcesOrder {
@@ -36,24 +32,6 @@ enum ZBSourcesOrder {
 };
 
 %group Tweak
-
-// iOS 13 dark mode fix
-
-%hook ZBAppDelegate
-
-- (BOOL)application:(id)arg1 didFinishLaunchingWithOptions:(id)arg2 {
-
-	if (@available(iOS 13.0, *)) {
-		
-		[[[UIApplication sharedApplication] delegate].window setOverrideUserInterfaceStyle:1];
-
-	}
-
-	return %orig;
-
-}
-
-%end
 
 // Tab Bar Icon labels and position
 
@@ -88,6 +66,26 @@ enum ZBSourcesOrder {
 		UIColor *color = ctintcolorhex;
 
 		self.tintColor = color;
+
+	}
+
+}
+
+%end
+
+// Set refresh control color
+
+%hook UIRefreshControl
+
+- (UIColor *)tintColor {
+
+	if (enabled && tintRefreshControl) {
+
+		return ctintcolorhex;
+	
+	} else {
+
+		return %orig;
 
 	}
 
@@ -414,18 +412,16 @@ NSString *currentSection = nil;
 
 // Clear separators
 
-%hook UITableView
+%hook UITableViewCell
 	
-- (void)layoutSubviews {
-	
-	%orig;
+- (void)setSeparatorColor:(id)arg1 {
 
 	if (enabled && noSeparators) {
 
-		self.separatorColor = [UIColor clearColor];
+		%orig([UIColor clearColor]);
 
 	}
-	
+
 }
 	
 %end
@@ -442,7 +438,7 @@ NSString *currentSection = nil;
 
 	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
 
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.4"]];
+	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.5"]];
 
 	newLabel.numberOfLines = 2;
 
@@ -505,7 +501,7 @@ NSString *currentSection = nil;
 
 %hook ZBSearchViewController
 
-- (void)didDismissSearchController:(id)arg1 {
+/* - (void)didDismissSearchController:(id)arg1 {
 
 	%orig;
 
@@ -515,7 +511,7 @@ NSString *currentSection = nil;
 
 	}
 
-}
+} */
 
 %end
 
@@ -530,42 +526,6 @@ NSString *currentSection = nil;
 	if (enabled && autorespring) {
 
 		[self.completeButton sendActionsForControlEvents:UIControlEventTouchUpInside];
-
-	}
-
-}
-
-%end
-
-// Redesigned queue  
-
-%hook ZBQueueViewController 
-
-- (void)confirm:(id)arg1 { // Requires NSFaceIDUsageDescription to be set in Zebra's Info.plist 
-
-	if (enabled && confirmfaceid) {
-
-		@autoreleasepool {
-		LAContext *context = [[LAContext alloc] init];
-		[context evaluatePolicy:policy localizedReason:LocalizedString(@"Authentication is required") reply:^(BOOL success, NSError *error) {
-				
-			if (success || (error && ((error.code == LAErrorPasscodeNotSet) || ((policy == LAPolicyDeviceOwnerAuthenticationWithBiometrics) && ((error.code == LAErrorTouchIDNotAvailable) || (error.code == LAErrorTouchIDNotEnrolled)))))) {
-		
-				dispatch_sync(dispatch_get_main_queue(), ^{
-
-							%orig;
-
-						});
-					}
-
-				}
-			];
-
-		}
-
-	} else {
-
-		%orig;
 
 	}
 
@@ -594,31 +554,31 @@ void loadColors() {
 %ctor {
 
 	preferences = [[HBPreferences alloc] initWithIdentifier:@"com.mtac.okapi"];
-	[preferences registerBool:&enabled default:YES forKey:@"Enabled"];
-	[preferences registerBool:&hideTabBarLabels default:YES forKey:@"hideTabBarLabels"]; 
-	[preferences registerBool:&tintBadges default:YES forKey:@"tintBadges"];
+	[preferences registerBool:&enabled default:NO forKey:@"Enabled"];
+	[preferences registerBool:&hideTabBarLabels default:NO forKey:@"hideTabBarLabels"]; 
+	[preferences registerBool:&tintBadges default:NO forKey:@"tintBadges"];
 	[preferences registerBool:&noSeparators default:NO forKey:@"tintBadges"];
-	[preferences registerBool:&hidePaidIcon default:NO forKey:@"hidePaidIcon"];
-	[preferences registerBool:&hideInstalledIcon default:NO forKey:@"hideInstalledIcon"];
-	[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
-	[preferences registerBool:&homecells default:YES forKey:@"homecells"];
-	[preferences registerBool:&redesignedQueue default:YES forKey:@"redesignedQueue"];
-	[preferences registerBool:&ctintcolor default:YES forKey:@"ctintcolor"];
+	//[preferences registerBool:&hidePaidIcon default:NO forKey:@"hidePaidIcon"];
+	//[preferences registerBool:&hideInstalledIcon default:NO forKey:@"hideInstalledIcon"];
+	//[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
+	[preferences registerBool:&homecells default:NO forKey:@"homecells"];
+	// [preferences registerBool:&redesignedQueue default:YES forKey:@"redesignedQueue"];
+	[preferences registerBool:&ctintcolor default:NO forKey:@"ctintcolor"];
 	[preferences registerObject:&ctintcolorhex default:nil forKey:@"ctintcolorhex"];
 	[preferences registerFloat:&pcellframe default:0.0 forKey:@"pcellframe"];
-	[preferences registerFloat:&respringdelay default:0.0 forKey:@"respringdelay"];
+	//[preferences registerFloat:&respringdelay default:0.0 forKey:@"respringdelay"];
 	[preferences registerBool:&autorespring default:NO forKey:@"autorespring"];
-	[preferences registerBool:&hidesearches default:YES forKey:@"hidesearches"];
-	[preferences registerBool:&confirmfaceid default:YES forKey:@"confirmfaceid"];
-	[preferences registerBool:&useCydiaIcons default:YES forKey:@"useCydiaIcons"];
-	[preferences registerBool:&hideThemes default:NO forKey:@"hideThemes"];
-	[preferences registerBool:&useCommunityRepos default:YES forKey:@"useCommunityRepos"];
-	[preferences registerBool:&betterexport default:YES forKey:@"betterexport"];
+	[preferences registerBool:&hidesearches default:NO forKey:@"hidesearches"];
+	//[preferences registerBool:&confirmfaceid default:YES forKey:@"confirmfaceid"];
+	[preferences registerBool:&useCydiaIcons default:NO forKey:@"useCydiaIcons"];
+	[preferences registerBool:&useCommunityRepos default:NO forKey:@"useCommunityRepos"];
+	[preferences registerBool:&betterexport default:NO forKey:@"betterexport"];
+	[preferences registerBool:&tintRefreshControl default:NO forKey:@"tintRefreshControl"];
 
 	loadColors();
 
-	if (kCFCoreFoundationVersionNumber >= 1240.10) policy = LAPolicyDeviceOwnerAuthentication;
-	else policy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
+	//if (kCFCoreFoundationVersionNumber >= 1240.10) policy = LAPolicyDeviceOwnerAuthentication;
+	//else policy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
 
 	%init(Tweak);
 

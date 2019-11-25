@@ -202,3 +202,7 @@
 @interface ZBAppDelegate : UIResponder
 @property(retain, nonatomic) UIWindow *window;
 @end
+
+@interface _UITableViewCellSeparatorView : UIView
+@property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
+@end

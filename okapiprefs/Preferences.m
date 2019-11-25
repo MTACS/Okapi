@@ -315,7 +315,7 @@
 
 		OkapiAppearanceSettings *appearanceSettings = [[OkapiAppearanceSettings alloc] init];
 		self.hb_appearanceSettings = appearanceSettings;
-		self.killButton = [[UIBarButtonItem alloc] initWithTitle:@"Restart Zebra" 
+		self.killButton = [[UIBarButtonItem alloc] initWithTitle:@"Restart Zebra"
                                     style:UIBarButtonItemStylePlain
                                     target:self 
                                     action:@selector(killZebra)];
@@ -411,7 +411,7 @@
             self.titleLabel.alpha = 1.0;
         }];
     }
-    
+
     if (offsetY > 0) offsetY = 0;
     self.headerImageView.frame = CGRectMake(0, offsetY, self.headerView.frame.size.width, 200 - offsetY);
 }
@@ -466,7 +466,7 @@
 
 	NSInteger versionNumber = [strippedVersion integerValue];
 
-	if (112 < versionNumber) {
+	if (115 < versionNumber) {
 
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
 						   message:[NSString stringWithFormat:@"Okapi %@ is available", version]
