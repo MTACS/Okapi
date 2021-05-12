@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Icons</string>
+			<string>Package Icons</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -18,17 +18,37 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>key</key>
-			<string>hideHomeIcons</string>
+			<string>hidePackageIcons</string>
 			<key>label</key>
-			<string>Hide Cell Icons</string>
+			<string>Hide Package Icons</string>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/preferences.changed</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>OkapiSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
+			<key>key</key>
+			<string>useCydiaIcons</string>
+			<key>label</key>
+			<string>Use Cydia Icons</string>
+			<key>PostNotification</key>
+			<string>com.mtac.okapi/preferences.changed</string>
+			<key>id</key>
+			<string>shouldEnable</string>
+			<key>subtitle</key>
+			<string>Only available if Cydia is installed</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Device Info</string>
+			<string>Package Labels</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -38,14 +58,14 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>key</key>
-			<string>hideDeviceID</string>
+			<string>showPackageVersion</string>
 			<key>label</key>
-			<string>Hide Device Info</string>
+			<string>Show Package Version</string>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/preferences.changed</string>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>Home</string>
+	<string>Packages</string>
 </dict>
 </plist>

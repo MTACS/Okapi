@@ -1,585 +1,276 @@
 #import "Tweak.h"
 
-#define zebraBlue [UIColor colorWithRed:107/255.0f green:127/255.0f blue:242/255.0f alpha:1.0f]
-#define LocalizedString(string) [NSBundle.mainBundle localizedStringForKey:string value:string table:nil]
-#define rootViewController [[[[UIApplication sharedApplication] delegate] window] rootViewController]
+@interface ZBSettingsTableViewController: UITableViewController
+@end
 
-HBPreferences *preferences;
-BOOL enabled;
-BOOL hideTabBarLabels;
-BOOL tintBadges;
-BOOL noSeparators;
-BOOL homecells;
-BOOL ctintcolor;
-BOOL autorespring;
-BOOL hidesearches;
-BOOL confirmfaceid;
-BOOL useCydiaIcons;
-BOOL useCommunityRepos;
-BOOL betterexport;
-BOOL tintRefreshControl;
-UIColor *ctintcolorhex = nil;
-CGFloat pcellframe;
-CGFloat respringdelay;
-//LAPolicy policy;
-NSArray *moreRepos;
-
-enum ZBSourcesOrder {
-    ZBTransfer,
-    ZBJailbreakRepo,
-    ZBCommunity,
-	ZBMore
-};
-
-%group Tweak
-
-// Tab Bar Icon labels and position
-
-%hook UITabBar
-
-- (void)setFrame:(CGRect)arg1 {
-
-	%orig;
-
-	if (enabled && ctintcolor) {
-
-		UIColor *color = ctintcolorhex;
-
-		self.tintColor = color;
-
-	}
-
+%group App
+%hook ZBPackage
+- (void)setIconImageForImageView:(UIImageView *)imageView {
+    if (hidePackageIcons) {
+        return;
+    } else {
+        if (useCydiaIcons) {
+            NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Applications/Cydia.app/Sections"];
+            UIImage *iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:self.section ofType:@"png"]];
+            if (iconImage) {
+                imageView.image = iconImage;
+            } else {
+                imageView.image = [UIImage imageWithContentsOfFile:@"/Applications/Cydia.app/Sections/Tweaks.png"];
+            }
+        } else {
+            %orig;
+        }
+    }
 }
-
 %end
-
-// Navigation Bar Tint Colors
-
-%hook UINavigationBar
-
-- (void)setFrame:(CGRect)arg1 {
-
-	%orig; 
-
-	if (enabled && ctintcolor) { 
-
-		UIColor *color = ctintcolorhex;
-
-		self.tintColor = color;
-
-	}
-
-}
-
-%end
-
-// Set refresh control color
-
-%hook UIRefreshControl
-
-- (UIColor *)tintColor {
-
-	if (enabled && tintRefreshControl) {
-
-		return ctintcolorhex;
-	
-	} else {
-
-		return %orig;
-
-	}
-
-}
-
-%end
-
-// Global app progress view tint color
-
-%hook UIProgressView
-
-- (void)setFrame:(CGRect)arg1 {
-
-	%orig;
-
-	if (enabled && ctintcolor) {
-
-		// UIColor *color = ctintcolorhex;
-
-		self.progressTintColor = ctintcolorhex;
-
-	}
-
-}
-
-%end
-
-// Install view tint button color
-
-%hook ZBConsoleViewController
-
-- (void)viewDidLoad {
-
-	%orig;
-
-	if (enabled && ctintcolor) {
-
-		// UIColor *color = ctintcolorhex;
-
-		UIButton *finishButton = MSHookIvar<UIButton *>(self, "_completeButton");
-
-		finishButton.backgroundColor = ctintcolorhex;
-
-	}
-
-}
-
-%end
-
-// Table view side alphabet index tint color
-
-%hook UITableViewIndex
-
-- (id)initWithFrame:(CGRect)arg1 {
-
-	%orig;
-
-	if (enabled && ctintcolor) {
-
-		// UIColor *color = ctintcolorhex;
-
-		self.interactionTintColor = ctintcolorhex;
-
-	}
-
-	return %orig;
-
-}
-
-%end
-
-// Package & Repo Cells
-
 %hook ZBPackageTableViewCell
-
-NSString *currentSection = nil;
-
-- (void)updateData:(ZBPackage *)package {
-
-	%orig;
-
-	if (enabled && useCydiaIcons) {
-
-		NSString *sectionString = package.section;
-
-		NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Applications/Cydia.app/Sections"];
-
-		UIImage *iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:sectionString ofType:@"png"]];
-
-		UIImageView *packageCellImageView = MSHookIvar<UIImageView *>(self, "_iconImageView");
-
-		UIImage *staticIconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
-
-		if (iconImage != nil) {
-
-			packageCellImageView.image = iconImage;
-
-		} else {
-
-			packageCellImageView.image = staticIconImage;
-
-		}
-
-	}
-
+- (void)updateData:(ZBPackage *)package calculateSize:(BOOL)calculateSize showVersion:(BOOL)showVersion {
+    if (showPackageVersion) {
+        showVersion = 1;
+    }
+    %orig;
 }
-
-- (UIImageView *)imageView {
-
-	NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
-
-	UIImage *iconImage = nil;
-
-	if (currentSection != nil) {
-
-		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:currentSection ofType:@"png"]];
-
-	} else {
-
-		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
-
-	}
-
-	UIImageView *imageCellView = [[UIImageView alloc] initWithImage:iconImage];
-
-	if (enabled && useCydiaIcons) {
-	
-		return imageCellView;
-
-	}
-
-	return %orig;
-
-}
-
-- (id)image {
-
-	NSBundle *bundle = [[NSBundle alloc] initWithPath:@"/Library/MobileSubstrate/DynamicLibraries/com.mtac.okapi.bundle"];
-
-	UIImage *iconImage = nil;
-	
-	if (currentSection != nil) {
-
-		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:currentSection ofType:@"png"]];
-
-	} else {
-
-		iconImage = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"Tweaks" ofType:@"png"]];
-
-	}
-
-	if (enabled && useCydiaIcons) {
-
-		return iconImage;
-
-	}
-
-	return %orig;
-
-}
-
 %end
-
-// Community Repos
-
-%hook ZBCommunityReposTableViewController
-
-- (void)fetchRepoJSON {
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setHTTPMethod:@"GET"];
-
-	if (enabled && useCommunityRepos) {
-
-		[request setURL:[NSURL URLWithString:@"https://mtac.app/api/morerepos.json"]];
-
-	} else {
-
-		[request setURL:[NSURL URLWithString:@"https://getzbra.com/api/communityrepos.json"]];
-
-	}
-
-    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
-      ^(NSData * _Nullable data,
-        NSURLResponse * _Nullable response,
-        NSError * _Nullable error) {
-        if (data && !error) {
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            if ([json objectForKey:@"repos"]) {
-
-				self.communityRepos = json[@"repos"];
-            	
-            } dispatch_async(dispatch_get_main_queue(), ^{
-                  [self.tableView reloadData];
-            });
-
-        }
-
-        if (error){
-
-            NSLog(@"[Zebra] Github error %@", error);
-
-        }
-
-    }] resume];
-    
-}
-
-
-%end
-
-// Tab Bar Labels
-
-%hook UITabBarButtonLabel
-
-- (void)didMoveToWindow {
-
-	%orig;
-
-	if (enabled && hideTabBarLabels) {
-
-		self.hidden = YES;
-
-	}
-
-}
-
-%end
-
-// Tab bar icon spacing
-
-%hook UITabBarButton
-
-- (void)layoutSubviews {
-
-	%orig;
-
-	if (enabled && hideTabBarLabels) {
-
-		NSString *deviceType = [[UIDevice currentDevice] model];
-
-		if (![deviceType containsString:@"iPad"]) {
-
-			CGPoint newCenter = self.center;
-
-    		newCenter.y = 30;
-
-    		self.center = newCenter;
-
-		} 
-
-	}
-
-}
-
-%end
-
-// Homepage cell icons
-
-%hook UITableViewCell
-
-- (void)layoutSubviews {
-
-	%orig;
-
-	if (enabled && homecells) {
-
-		UILabel *newTextLabel = MSHookIvar<UILabel *>(self, "_textLabel");
-
-		CGRect newTextLabelFrame = newTextLabel.frame;
-
-		newTextLabelFrame.origin.x = 12;
-
-		newTextLabel.frame = newTextLabelFrame;
-
-	}
-
-}
-
-- (UIImageView *)imageView {
-
-	%orig;
-
-	if (enabled && homecells) {
-
-		// return NULL;
-
-		return nil;
-
-	}
-
-	return %orig;
-
-}
-
-%end
-
-// Badge tint color
-
-%hook _UIBadgeView
-
-- (void)layoutSubviews {
-
-	%orig;
-
-	if (enabled && tintBadges) {
-
-		if (ctintcolor) {
-
-			// UIColor *color = ctintcolorhex;
-
-			self.backgroundColor = ctintcolorhex;
-
-		} else {
-
-			self.backgroundColor = [UIColor tintColor];
-
-		}
-
-	}
-
-}
-
-%end
-
-// Clear separators
-
-%hook UITableViewCell
-	
-- (void)setSeparatorColor:(id)arg1 {
-
-	if (enabled && noSeparators) {
-
-		%orig([UIColor clearColor]);
-
-	}
-
-}
-	
-%end
-
-// Set Okapi build number at footer of Home view
-
-%hook ZBHomeTableViewController
-
-- (void)configureFooter {
-
-	%orig;
-
-	UILabel *newLabel = MSHookIvar<UILabel *>(self, "_udidLabel");
-
-	NSString *uniqueid = MSHookIvar<UILabel *>(self, "_udidLabel").text;
-
-	uniqueid = [uniqueid stringByAppendingString:[NSString stringWithFormat:@"\r%@", @"Okapi 1.1.5"]];
-
-	newLabel.numberOfLines = 2;
-
-	newLabel.text = uniqueid;
-
-}
-
-%end
-
-// Better exportation of sources and packages
-
-%hook ZBPackageListTableViewController
-
-- (void)sharePackages {
-
-	if (enabled && betterexport) {
-
-		UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Zebra" message:@"What do you want to export?" preferredStyle:UIAlertControllerStyleAlert];
-
-		UIAlertAction *packages = [UIAlertAction actionWithTitle:@"Packages" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-
-			%orig;
-                        
-    	}];
-
-		UIAlertAction *sources = [UIAlertAction actionWithTitle:@"Sources" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        
-			[self exportSources];
-
-    	}];
-
-		UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-		[alert addAction:cancel];
-		[alert addAction:packages];
-		[alert addAction:sources];
-		[self presentViewController:alert animated:YES completion:nil];
-
-	}
-
-	%orig;
-
-}
-
-%new 
-
-- (void)exportSources {
-
-	NSString *lists = [@"/var/mobile/Library/Application Support/xyz.willy.Zebra" stringByAppendingPathComponent:@"sources.list"];
-
-	NSURL *url = [NSURL fileURLWithPath:lists];
-
-	UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:nil];
-    [self presentActivityController:controller];
-
-}
-
-%end
-
-// Clear search history
-
-%hook ZBSearchViewController
-
-/* - (void)didDismissSearchController:(id)arg1 {
-
-	%orig;
-
-	if (enabled && hidesearches) {
-
-		[self clearSearches];
-
-	}
-
-} */
-
-%end
-
-// Auto respring
-
-%hook ZBConsoleViewController
-
-- (void)updateCompleteButton {
-
+%hook ZBSettingsTableViewController
+- (void)viewDidLoad {
     %orig;
 
-	if (enabled && autorespring) {
-
-		[self.completeButton sendActionsForControlEvents:UIControlEventTouchUpInside];
-
-	}
-
+    UIButton *okapiButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    okapiButton.frame = CGRectMake(0,0,30,30);
+    okapiButton.layer.cornerRadius = okapiButton.frame.size.height / 2;
+    okapiButton.layer.masksToBounds = YES;
+    [okapiButton setTitleColor:CURRENT_TINT forState:UIControlStateNormal];
+    [okapiButton setTitle:@"Okapi" forState:UIControlStateNormal];
+    [okapiButton addTarget:self action:@selector(okapi:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *okapiButtonItem = [[UIBarButtonItem alloc] initWithCustomView:okapiButton];
+    self.navigationItem.leftBarButtonItems = @[okapiButtonItem];
 }
-
+%new
+- (void)okapi:(id)sender {
+    NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/OkapiPrefs.bundle"];
+    [bundle load];
+	if ([bundle isLoaded]) {
+        OkapiRootListController* okapiController = [%c(OkapiRootListController) new];
+        UINavigationController* okapiNavigationController = [[UINavigationController alloc] initWithRootViewController:okapiController];
+        [self presentViewController:okapiNavigationController animated:YES completion:nil];
+    }
+}
 %end
 
+%hook UISwitch
+- (void)layoutSubviews {
+	%orig;
+    [self setOnTintColor:CURRENT_TINT];
+}
+- (void)setOnTintColor:(UIColor *)arg1 {
+    %orig(CURRENT_TINT);
+}
 %end
 
-// Load colors from libcolorpicker cells in preferences
+%hook _UIBadgeView
+- (void)setBadgeColor:(UIColor *)arg1 {
+	if (tintBadge) {
+		NSMutableDictionary *colorDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapicolors.plist"];
+        arg1 = [SparkColourPickerUtils colourWithString:[colorDictionary objectForKey:@"appTintColor"] withFallback:@"#667FFA"];
+    }
+	%orig;
+}
+%end
 
-void loadColors() {
+%hook UITabBarButton
+- (void)setFrame:(CGRect)arg1 {
+	if (hideTabLabels) {
+		arg1.origin.y = 10;
+	} 
+	%orig;
+}
+%end
 
-	NSDictionary *colors = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapi.plist"];
-
-	if (!colors) {
-
-		return;
-
+%hook UITabBarButtonLabel
+- (void)setFrame:(CGRect)arg1 {
+	if (hideTabLabels) {
+		arg1 = CGRectMake(0, 0, 0, 0);
 	}
+	%orig;
+}
+%end
 
-	ctintcolorhex = [LCPParseColorString([colors objectForKey:@"ctintcolorhex"], @"#6B7FF2:1.0") copy];
+%hook UITableViewCell
+- (void)didMoveToWindow {
+    %orig;
+    if ([[self _viewControllerForAncestor] isKindOfClass:%c(ZBHomeTableViewController)]) {
+        if (hideHomeIcons) {
+            MSHookIvar<UIImageView *>(self, "_imageView").hidden = YES;
+        }   
+    }
+}
+%end
 
+%hook UITableViewCellContentView
+- (void)setFrame:(CGRect)arg1 {
+    if (([[self _viewControllerForAncestor] isKindOfClass:%c(ZBChangesTableViewController)] || [[self _viewControllerForAncestor] isKindOfClass:%c(ZBPackageListTableViewController)]) && hidePackageIcons) {
+        arg1 = CGRectMake(arg1.origin.x - 60, arg1.origin.y, arg1.size.width + 60, arg1.size.height);
+    }
+    if ([[self _viewControllerForAncestor] isKindOfClass:%c(ZBHomeTableViewController)] && hideHomeIcons && [self.subviews count] > 1) {
+        arg1 = CGRectMake(arg1.origin.x - 44, arg1.origin.y, arg1.size.width + 44, arg1.size.height);
+    }
+    if (([[self _viewControllerForAncestor] isKindOfClass:%c(ZBSourceListTableViewController)] || [[self _viewControllerForAncestor] isKindOfClass:%c(ZBStoresListTableViewController)] || [[self _viewControllerForAncestor] isKindOfClass:%c(ZBCommunitySourcesTableViewController)]) && hideSourceIcons) {
+        arg1 = CGRectMake(arg1.origin.x - 44, arg1.origin.y, arg1.size.width + 44, arg1.size.height);
+    }
+    if ([[self _viewControllerForAncestor] isKindOfClass:%c(ZBQueueViewController)] && hidePackageIcons) {
+        arg1 = CGRectMake(arg1.origin.x - 42, arg1.origin.y, arg1.size.width + 42, arg1.size.height);
+    }
+    %orig;
+}
+%end
+
+%hook ZBSourceTableViewCell
+- (void)awakeFromNib {
+    %orig;
+    self.iconImageView.hidden = YES;
+    [self.sourceLabel setFrame:CGRectMake(self.sourceLabel.frame.origin.x - 44, self.sourceLabel.frame.origin.y, self.sourceLabel.bounds.size.width, self.sourceLabel.bounds.size.height)];
+}
+%end
+
+%hook ZBSourceListTableViewController
+- (void)layoutNavigationButtonsNormal {
+    %orig;
+    if (showSourceCount) {
+        NSString *originalTitle = MSHookIvar<NSString *>(self.navigationItem, "_title");
+        NSMutableDictionary *sources = [[%c(ZBSourceManager) sharedInstance] sources];
+        if (![self.navigationItem.title containsString:@" - "]) {
+            self.navigationItem.title = [NSString stringWithFormat:@"%@ - %lu", originalTitle, [sources allKeys].count];
+        }
+    }
+}
+%end
+
+%hook ZBPackageListTableViewController
+- (void)layoutNavigationButtonsNormal {
+    %orig;
+    if (YES) {
+        NSString *originalTitle = MSHookIvar<NSString *>(self.navigationItem, "_title");
+        NSArray *packages = MSHookIvar<NSArray *>(self, "_tableData");
+        if (![self.navigationItem.title containsString:@" - "]) {
+            self.navigationItem.title = [NSString stringWithFormat:@"%@ - %lu", originalTitle, packages.count];
+        }
+    }
+}
+%end
+
+%hook ZBHomeTableViewController
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (%orig != NULL && hideDeviceID) {
+        return NULL;
+    }
+    return %orig;
+}
+%end 
+%end
+
+%group OkapiColors 
+%hook ZBThemeManager
++ (UIColor *)getAccentColor:(ZBAccentColor)accentColor {
+    if (useCustomTintColor) {
+        NSMutableDictionary *colorDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapicolors.plist"];
+        return [SparkColourPickerUtils colourWithString:[colorDictionary objectForKey:@"appTintColor"] withFallback:@"#667FFA"];
+    }
+    return %orig;
+}
+%end
+%end
+
+%group FloatingQueue
+%hook ZBTabBarController
+%property (strong, nonatomic) UIView *queueButton;
+- (void)viewDidLoad {
+    %orig;
+    if (!self.queueButton) {
+        NSMutableDictionary *colorDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapicolors.plist"];
+        self.queueButton = [[UIView alloc] init];
+        self.queueButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.height - self.tabBar.bounds.size.height - 100, 60, 60);
+        self.queueButton.backgroundColor = [SparkColourPickerUtils colourWithString:[colorDictionary objectForKey:@"appTintColor"] withFallback:@"#667FFA"];
+        self.queueButton.layer.cornerRadius = 30;
+        self.queueButton.layer.masksToBounds = YES;
+
+        UIButton *openQueue = [UIButton buttonWithType:UIButtonTypeCustom];
+        openQueue.frame = self.queueButton.bounds;
+        openQueue.tintColor = [UIColor whiteColor];
+        openQueue.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        openQueue.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+        openQueue.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+        [openQueue setImage:[UIImage systemImageNamed:@"arrow.down.circle.fill"] forState:UIControlStateNormal];
+        [openQueue addTarget:self action:@selector(okapiOpenQueue:) forControlEvents:UIControlEventTouchUpInside];
+        [self.queueButton addSubview:openQueue];
+
+        [self.view addSubview:self.queueButton];
+        self.queueButton.hidden = YES;
+    }
+}
+- (void)openQueue:(BOOL)openPopup {
+    self.queueButton.hidden = NO;
+    %orig;
+}
+%new
+- (void)okapiOpenQueue:(id)sender {
+    [self openQueue:YES];
+}
+%end
+
+%hook LNPopupBar
+- (void)didMoveToWindow {
+    %orig;
+    self.hidden = YES;
+}
+%end
+
+%hook ZBQueue
+- (void)clear {
+    %orig;
+    ZBTabBarController *tabBar = (ZBTabBarController *)((ZBAppDelegate *)[[UIApplication sharedApplication] delegate]).window.rootViewController;
+    tabBar.queueButton.hidden = YES;
+}
+%end
+%end
+
+static void notificationCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	NSNumber *enabledValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"enabled" inDomain:domain];
+	enabled = (enabledValue) ? [enabledValue boolValue] : YES;
+    NSNumber *useCustomTintColorValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"useCustomTintColor" inDomain:domain];
+    useCustomTintColor = (useCustomTintColorValue) ? [useCustomTintColorValue boolValue] : NO;
+    NSNumber *hidePackageIconsValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"hidePackageIcons" inDomain:domain];
+    hidePackageIcons = (hidePackageIconsValue) ? [hidePackageIconsValue boolValue] : NO;
+    NSNumber *showPackageVersionValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"showPackageVersion" inDomain:domain];
+    showPackageVersion = (showPackageVersionValue) ? [showPackageVersionValue boolValue] : NO;
+    NSNumber *hideHomeIconsValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"hideHomeIcons" inDomain:domain];
+    hideHomeIcons = (hideHomeIconsValue) ? [hideHomeIconsValue boolValue] : NO;
+    NSNumber *hideSourceIconsValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"hideSourceIcons" inDomain:domain];
+    hideSourceIcons = (hideSourceIconsValue) ? [hideSourceIconsValue boolValue] : NO;
+    NSNumber *showSourceCountValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"showSourceCount" inDomain:domain];
+    showSourceCount = (showSourceCountValue) ? [showSourceCountValue boolValue] : NO;
+    NSNumber *showPackageCountValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"showPackageCount" inDomain:domain];
+    showPackageCount = (showPackageCountValue) ? [showPackageCountValue boolValue] : NO;
+    NSNumber *hideDeviceIDValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"hideDeviceID" inDomain:domain];
+    hideDeviceID = (hideDeviceIDValue) ? [hideDeviceIDValue boolValue] : NO;
+    NSNumber *useFloatingQueueValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"useFloatingQueue" inDomain:domain];
+    useFloatingQueue = (useFloatingQueueValue) ? [useFloatingQueueValue boolValue] : NO;
+    NSNumber *useCydiaIconsValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"useCydiaIcons" inDomain:domain];
+    useCydiaIcons = (useCydiaIconsValue) ? [useCydiaIconsValue boolValue] : NO;
+    NSNumber *tintBadgeValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"tintBadge" inDomain:domain];
+    tintBadge = (tintBadgeValue) ? [tintBadgeValue boolValue] : NO;
+    NSNumber *hideTabLabelsValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"hideTabLabels" inDomain:domain];
+    hideTabLabels = (hideTabLabelsValue) ? [hideTabLabelsValue boolValue] : NO;
 }
 
 %ctor {
-
-	preferences = [[HBPreferences alloc] initWithIdentifier:@"com.mtac.okapi"];
-	[preferences registerBool:&enabled default:NO forKey:@"Enabled"];
-	[preferences registerBool:&hideTabBarLabels default:NO forKey:@"hideTabBarLabels"]; 
-	[preferences registerBool:&tintBadges default:NO forKey:@"tintBadges"];
-	[preferences registerBool:&noSeparators default:NO forKey:@"tintBadges"];
-	//[preferences registerBool:&hidePaidIcon default:NO forKey:@"hidePaidIcon"];
-	//[preferences registerBool:&hideInstalledIcon default:NO forKey:@"hideInstalledIcon"];
-	//[preferences registerBool:&hidePackageIcons default:YES forKey:@"hidePackageIcons"];
-	[preferences registerBool:&homecells default:NO forKey:@"homecells"];
-	// [preferences registerBool:&redesignedQueue default:YES forKey:@"redesignedQueue"];
-	[preferences registerBool:&ctintcolor default:NO forKey:@"ctintcolor"];
-	[preferences registerObject:&ctintcolorhex default:nil forKey:@"ctintcolorhex"];
-	[preferences registerFloat:&pcellframe default:0.0 forKey:@"pcellframe"];
-	//[preferences registerFloat:&respringdelay default:0.0 forKey:@"respringdelay"];
-	[preferences registerBool:&autorespring default:NO forKey:@"autorespring"];
-	[preferences registerBool:&hidesearches default:NO forKey:@"hidesearches"];
-	//[preferences registerBool:&confirmfaceid default:YES forKey:@"confirmfaceid"];
-	[preferences registerBool:&useCydiaIcons default:NO forKey:@"useCydiaIcons"];
-	[preferences registerBool:&useCommunityRepos default:NO forKey:@"useCommunityRepos"];
-	[preferences registerBool:&betterexport default:NO forKey:@"betterexport"];
-	[preferences registerBool:&tintRefreshControl default:NO forKey:@"tintRefreshControl"];
-
-	loadColors();
-
-	//if (kCFCoreFoundationVersionNumber >= 1240.10) policy = LAPolicyDeviceOwnerAuthentication;
-	//else policy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
-
-	%init(Tweak);
-
+    notificationCallback(NULL, NULL, NULL, NULL, NULL);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, notificationCallback, (CFStringRef)PostNotificationString, NULL, CFNotificationSuspensionBehaviorCoalesce);
+    if (enabled) {
+        %init(App);
+        %init(OkapiColors);
+        if (useFloatingQueue) {
+            %init(FloatingQueue);
+        }
+    }
 }

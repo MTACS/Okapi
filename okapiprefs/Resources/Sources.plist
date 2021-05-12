@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Floating Queue</string>
+			<string>Source Icons</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -18,14 +18,34 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>key</key>
-			<string>useFloatingQueue</string>
+			<string>hideSourceIcons</string>
 			<key>label</key>
-			<string>User Floating Queue</string>
+			<string>Hide Source Icons</string>
+			<key>PostNotification</key>
+			<string>com.mtac.okapi/preferences.changed</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Source Count</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
+			<key>key</key>
+			<string>showSourceCount</string>
+			<key>label</key>
+			<string>Show Sources Count</string>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/preferences.changed</string>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>Queue</string>
+	<string>Sources</string>
 </dict>
 </plist>

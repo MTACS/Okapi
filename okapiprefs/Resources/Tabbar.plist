@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Floating Queue</string>
+			<string>Badges</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -18,14 +18,34 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>key</key>
-			<string>useFloatingQueue</string>
+			<string>tintBadge</string>
 			<key>label</key>
-			<string>User Floating Queue</string>
+			<string>Tint Badge</string>
+			<key>PostNotification</key>
+			<string>com.mtac.okapi/preferences.changed</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Labels</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
+			<key>key</key>
+			<string>hideTabLabels</string>
+			<key>label</key>
+			<string>Hide Labels</string>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/preferences.changed</string>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>Queue</string>
+	<string>Tab Bar</string>
 </dict>
 </plist>

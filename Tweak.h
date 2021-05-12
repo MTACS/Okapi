@@ -1,208 +1,113 @@
-#include <stdlib.h>
-#import <UIKit/UIKit.h>
-#import <headers/MobileGestalt.h>
-#import <sys/utsname.h>
-#import <sys/sysctl.h>
-#import <sys/types.h>
-#import <sys/stat.h>
-#import <headers/UIColor-GlobalColors.h>
-#import <headers/UIView+draggable.h>
-#import <Cephei/HBPreferences.h>
-#import <libcolorpicker.h>
-#import <AudioToolbox/AudioServices.h>
-#import <Foundation/Foundation.h>
-#import <LocalAuthentication/LocalAuthentication.h>
-#include <stdio.h>
-#include <stddef.h>
-#import <MobileCoreServices/MobileCoreServices.h>
+#import "./okapiprefs/OkapiRootListController.h"
+#import "SparkColourPickerUtils.h"
 
-@interface ZBPackageTableViewCell : UITableViewCell {
-    UIView *_backgroundContainerView;
-    UIImageView *_iconImageView;
-    UILabel *_packageLabel;
-    UILabel *_descriptionLabel;
-    UIImageView *_isPaidImageView;
-    UIImageView *_isInstalledImageView;
-    UILabel *_queueStatusLabel;
-}
-@property (nonatomic, assign, readwrite) CGRect frame;
+#define CURRENT_TINT [[UIApplication sharedApplication] keyWindow].tintColor
+#define HEIGHT [UIScreen mainScreen].bounds.size.height
+#define WIDTH [UIScreen mainScreen].bounds.size.width
+
+static NSString *domain = @"com.mtac.okapi";
+static NSString *PostNotificationString = @"com.mtac.okapi/preferences.changed";
+static BOOL enabled;
+static BOOL useCustomTintColor;
+static BOOL hidePackageIcons;
+static BOOL showPackageVersion;
+static BOOL hideHomeIcons;
+static BOOL hideSourceIcons;
+static BOOL showSourceCount;
+static BOOL showPackageCount;
+static BOOL hideDeviceID;
+static BOOL useFloatingQueue;
+static BOOL useCydiaIcons;
+static BOOL tintBadge;
+static BOOL hideTabLabels;
+
+typedef enum : NSUInteger {
+    ZBAccentColorAquaVelvet,
+    ZBAccentColorCornflowerBlue,
+    ZBAccentColorGoldenTainoi,
+    ZBAccentColorIrisBlue,
+    ZBAccentColorLotusPink,
+    ZBAccentColorMonochrome,
+    ZBAccentColorMountainMeadow,
+    ZBAccentColorPastelRed,
+    ZBAccentColorPurpleHeart,
+    ZBAccentColorRoyalBlue,
+    ZBAccentColorShark,
+    ZBAccentColorStorm,
+} ZBAccentColor;
+
+@interface NSUserDefaults (Okapi)
+- (id)objectForKey:(NSString *)key inDomain:(NSString *)domain;
+- (void)setObject:(id)value forKey:(NSString *)key inDomain:(NSString *)domain;
 @end
 
-@interface UITabBarButtonLabel : UILabel
-@property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
+@interface _UISystemBackgroundView: UIView
 @end
 
-@interface UITabBarButton : UIControl
-@property (nonatomic, assign, readwrite) CGPoint center;
-- (void)refresh;
+@interface UIView (Okapi)
+- (id)_viewControllerForAncestor;
+- (void)setOverrideUserInterfaceStyle:(NSInteger)style;
 @end
 
-@interface ZBRefreshViewController: UIViewController
+@interface UITableViewLabel: UIView
 @end
 
-@interface ZBPackageInfoView: UIView {
-
-	UIImageView *_packageIcon;
-	UILabel *_packageName;
-
-}
+@interface UITableViewCellContentView: UIView
 @end
 
-@interface ZBRepoTableViewCell : UITableViewCell {
-    UIImageView *_iconImageView;
-    UILabel *_repoLabel;
-    UIView *_backgroundContainerView;
-    UILabel *_urlLabel;
-    UIView *_accessoryZBView;
-}
+@interface ZBPackage : NSObject
+@property (nonatomic, strong) NSString *section;
 @end
 
-@interface _UIBadgeView : UIView
-@property (nonatomic, copy, readwrite) UIColor *backgroundColor;
+@interface ZBPackageTableViewCell: UITableViewCell
+@property (strong, nonatomic) UIView *backgroundContainerView;
+@property (strong, nonatomic) UIImageView *iconImageView;
+@property (strong, nonatomic) UILabel *packageLabel;
+@property (strong, nonatomic) UILabel *descriptionLabel;
+@property (strong, nonatomic) UIImageView *isPaidImageView;
+@property (strong, nonatomic) UIImageView *isInstalledImageView;
+@property (strong, nonatomic) UILabel *queueStatusLabel;
+@property (strong, nonatomic) UILabel *authorAndSourceAndSize;
 @end
 
-@interface SBSeparatorView : UIView
-@property (nonatomic, copy, readwrite) UIColor *backgroundColor;
+@interface ZBSourceTableViewCell: UITableViewCell
+@property (strong, nonatomic) UIImageView *iconImageView;
+@property (strong, nonatomic) UILabel *sourceLabel;
 @end
 
-@interface ZBDevice : NSObject
-+ (long long)selectedColorTint;
-+ (void)refreshViews;
-+ (void)applyThemeSettings;
-+ (void)configureLightMode;
-+ (void)configureDarkMode;
-+ (void)setDarkModeEnabled:(_Bool)arg1;
-+ (_Bool)darkModeOledEnabled;
-+ (_Bool)darkModeEnabled;
-+ (id)deviceType;
-+ (_Bool)isUncover;
-+ (_Bool)isElectra;
-+ (_Bool)isChimera;
-+ (_Bool)_isRegularDirectory:(const char *)arg1;
-+ (_Bool)_isRegularFile:(const char *)arg1;
-+ (void)uicache:(id)arg1 observer:(id)arg2;
-+ (void)sbreload;
-+ (id)machineID;
-+ (id)deviceModelID;
-+ (id)UDID;
-+ (_Bool)needsSimulation;
+@interface ZBSourceListTableViewController: UITableViewController
 @end
 
-@interface ZBSearchViewController : UITableViewController
-@property (retain, nonatomic) UISearchController *searchController;
-- (void)clearSearches;
-@end
-
-@interface ZBHomeTableViewController : UITableViewController
-@property (retain, nonatomic) UILabel *udidLabel;
-@end
-
-@interface LNPopupBar
-
-- (void)setImage:(UIImage *)image;
-- (void)addGestureRecognizer:(UIGestureRecognizer *)arg1;
-
-@end
-
-@interface ZBQueue
+@interface ZBSourceManager: NSObject
 + (id)sharedInstance;
-- (void)clearQueue;
+- (NSMutableDictionary *)sources;
 @end
 
-@interface _UIAlertControllerView : UIView
-@property (nonatomic, strong, readwrite) UIColor *interactionTintColor;
-@end
-
-@interface ZBConsoleViewController : UIViewController {
-
-	UIButton *_completeButton;
-
+@interface ZBPackageListTableViewController: UITableViewController {
+    NSArray *packages;
 }
-@property(retain, nonatomic) UIButton *completeButton;
 @end
 
-@interface ZBQueueViewController : UITableViewController
-- (void)confirm:(id)arg1;
+@interface ZBHomeTableViewController: UITableViewController
+- (void)showUDID;
+- (void)hideUDID;
 @end
 
-@class NSArray, NSDate, NSString, NSURL, ZBRepo;
-
-@interface ZBPackage : NSObject {
-
-	NSArray *dependsOn;
-
-}
-@property(retain, nonatomic) NSString *section;
-@property(retain, nonatomic) ZBRepo *repo;
-@property(retain, nonatomic) NSString *identifier;
-@property(nonatomic, strong) NSString *sectionImageName;
+@interface ZBTabBarController: UITabBarController
+@property (strong, nonatomic) UIView *queueButton;
+- (void)openQueue:(BOOL)arg1;
+- (void)okapiOpenQueue;
 @end
 
-@interface ZBRepo : NSObject
-@property(retain, nonatomic) NSString *baseURL;
+@interface LNPopupBar: UIView
 @end
 
-@interface ZBChangesTableViewController
-- (double)tableView:(id)arg1 heightForHeaderInSection:(long long)arg2;
+@interface ZBAppDelegate: UIResponder
+@property (strong, nonatomic) UIWindow *window;
 @end
 
-@interface ZBRefreshableTableViewController : UITableViewController
-+ (_Bool)supportRefresh;
-- (void)refreshSources:(id)arg1;
-@end
-
-@interface ZBCommunityReposTableViewController : UITableViewController
-- (void)fetchMoreRepoJSON;
-@property(retain) NSArray *communityRepos;
-@end
-
-@interface ZBPackageDepictionViewController : UIViewController {
-
-	UILabel *_packageName;
-
-}
-@property(retain, nonatomic) UITableView *tableView;
-@end
-
-@class NSArray, NSMutableArray, NSString, UIBarButtonItem, ZBRepo;
-
-@interface ZBPackageListTableViewController : ZBRefreshableTableViewController <UIViewControllerPreviewingDelegate>
-- (void)sharePackages;
-- (void)presentActivityController:(id)arg1;
-- (void)exportSources;
-@property(readonly) Class superclass;
-@end
-
-@class NSMutableArray, NSString, ZBDownloadManager;
-@interface ZBDatabaseManager : NSObject
-+ (id)sharedInstance;
-- (id)installedPackages:(_Bool)arg1;
-@end
-
-@interface SBUIAppIconForceTouchControllerDataProvider : NSObject
-- (NSString *)applicationBundleIdentifier;
-@end
-
-@interface SBSApplicationShortcutItem : NSObject <NSCopying> 
-@property (nonatomic,copy) NSString * type;
-@property (nonatomic,copy) NSString * localizedTitle;
-@property (nonatomic,copy) NSString * localizedSubtitle;
-@property (nonatomic,copy) NSString * bundleIdentifierToLaunch;
-// @property (nonatomic,copy) SBSApplicationShortcutIcon * icon; 
-@end
-
-@interface UITableViewIndex : UIControl
-@property (nonatomic, strong, readwrite) UIColor *interactionTintColor;
-@end
-
-@interface _UIBarBackgroundTopCurtainView : UIView
-@property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
-@end
-
-@interface ZBAppDelegate : UIResponder
-@property(retain, nonatomic) UIWindow *window;
-@end
-
-@interface _UITableViewCellSeparatorView : UIView
-@property (nonatomic, assign, readwrite, getter=isHidden) BOOL hidden;
+@interface ZBQueue: NSObject
+@property (nonatomic, strong) NSMutableArray<NSString *> *queuedPackagesList;
++ (id)sharedQueue;
++ (int)count;
 @end
