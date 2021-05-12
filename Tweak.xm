@@ -59,7 +59,7 @@
 %end
 
 %hook UISwitch
-- (void)layoutSubviews {
+- (void)layoutSubviews { // Not ideal
 	%orig;
     [self setOnTintColor:CURRENT_TINT];
 }
@@ -107,7 +107,7 @@
 }
 %end
 
-%hook UITableViewCellContentView
+%hook UITableViewCellContentView // Rather hacky, better to hook tableview datasource
 - (void)setFrame:(CGRect)arg1 {
     if (([[self _viewControllerForAncestor] isKindOfClass:%c(ZBChangesTableViewController)] || [[self _viewControllerForAncestor] isKindOfClass:%c(ZBPackageListTableViewController)]) && hidePackageIcons) {
         arg1 = CGRectMake(arg1.origin.x - 60, arg1.origin.y, arg1.size.width + 60, arg1.size.height);
@@ -128,8 +128,9 @@
 %hook ZBSourceTableViewCell
 - (void)awakeFromNib {
     %orig;
-    self.iconImageView.hidden = YES;
-    [self.sourceLabel setFrame:CGRectMake(self.sourceLabel.frame.origin.x - 44, self.sourceLabel.frame.origin.y, self.sourceLabel.bounds.size.width, self.sourceLabel.bounds.size.height)];
+    if (hideSourceIcons) {
+        self.iconImageView.hidden = YES;
+    }
 }
 %end
 
