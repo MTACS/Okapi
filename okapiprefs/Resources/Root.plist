@@ -60,6 +60,18 @@
 			<key>default</key>
 			<string></string>
 			<key>detail</key>
+			<string>OkapiTableListController</string>
+			<key>defaults</key>
+			<string>com.mtac.okapi</string>
+			<key>label</key>
+			<string>Table Views</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>default</key>
+			<string></string>
+			<key>detail</key>
 			<string>OkapiQueueListController</string>
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>

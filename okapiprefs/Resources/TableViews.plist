@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Badges</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -20,19 +20,19 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>key</key>
-			<string>tintBadge</string>
+			<string>hideTableSeparators</string>
 			<key>label</key>
-			<string>Tint Badge</string>
+			<string>Hide Separators</string>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/preferences.changed</string>
 			<key>subtitle</key>
-			<string>Tints refresh &amp; update badge</string>
+			<string>Remove horizontal separators</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Labels</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -44,16 +44,16 @@
 			<key>defaults</key>
 			<string>com.mtac.okapi</string>
 			<key>key</key>
-			<string>hideTabLabels</string>
+			<string>useInsetCells</string>
 			<key>label</key>
-			<string>Hide Labels</string>
+			<string>Inset Cells</string>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/preferences.changed</string>
 			<key>subtitle</key>
-			<string>Removes labels &amp; centers icons</string>
+			<string>Gives a modern look</string>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>Tab Bar</string>
+	<string>Table Views</string>
 </dict>
 </plist>

@@ -21,6 +21,9 @@
 @interface OkapiPackageOptionsListController : PSListController
 @end
 
+@interface OkapiTableListController : PSListController
+@end
+
 @interface OkapiTabBarListController : PSListController
 @end
 

@@ -20,6 +20,8 @@ static BOOL useFloatingQueue;
 static BOOL useCydiaIcons;
 static BOOL tintBadge;
 static BOOL hideTabLabels;
+static BOOL hideTableSeparators;
+static BOOL useInsetCells;
 
 typedef enum : NSUInteger {
     ZBAccentColorAquaVelvet,
@@ -59,6 +61,10 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSString *section;
 @end
 
+@interface ZBBasePackage : NSObject
+@property (nonatomic, strong) NSString *section;
+@end
+
 @interface ZBPackageTableViewCell: UITableViewCell
 @property (strong, nonatomic) UIView *backgroundContainerView;
 @property (strong, nonatomic) UIImageView *iconImageView;
@@ -73,14 +79,15 @@ typedef enum : NSUInteger {
 @interface ZBSourceTableViewCell: UITableViewCell
 @property (strong, nonatomic) UIImageView *iconImageView;
 @property (strong, nonatomic) UILabel *sourceLabel;
+- (void)setStoreBadge:(id)arg1;
 @end
 
 @interface ZBSourceListTableViewController: UITableViewController
 @end
 
 @interface ZBSourceManager: NSObject
+@property (strong, nonatomic) id sources;
 + (id)sharedInstance;
-- (NSMutableDictionary *)sources;
 @end
 
 @interface ZBPackageListTableViewController: UITableViewController {
@@ -110,4 +117,27 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSMutableArray<NSString *> *queuedPackagesList;
 + (id)sharedQueue;
 + (int)count;
+@end
+
+@interface ZBMainSettingsTableViewController: UITableViewController
+@end
+
+@interface ZBSettingsTableViewController: UITableViewController
+@end
+
+@interface _UINavigationBarLargeTitleViewLayout : UIView
+@property (nonatomic,copy,readwrite) NSString * text;
+@property (nonatomic,strong) UILabel * titleLabel;
+@property (nonatomic,assign) BOOL adjustsFontSizeToFitWidth;
+@end
+
+@interface _UINavigationBarLargeTitleView: UIView
+@end
+
+@interface ZBSourceListViewController: UITableViewController
+@end
+
+@interface ZBDatabaseManager: NSObject
+- (NSMutableArray *)installedPackageIDs;
++ (id)sharedInstance;
 @end

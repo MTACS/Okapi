@@ -12,12 +12,14 @@ UIColor *currentTint() {
 	[super viewDidLoad];
 
 	UIBarButtonItem *applyButton = [[UIBarButtonItem alloc] initWithTitle:@"Apply" style:UIBarButtonItemStylePlain target:self action:@selector(apply)];
+	[applyButton setTintColor:currentTint()];
 	self.navigationItem.rightBarButtonItem = applyButton;
 
 	UIButton *info = [UIButton buttonWithType:UIButtonTypeCustom];
     info.frame = CGRectMake(0,0,30,30);
     info.layer.cornerRadius = info.frame.size.height / 2;
     info.layer.masksToBounds = YES;
+	[info setTintColor:currentTint()];
     [info setImage:[UIImage systemImageNamed:@"info.circle"] forState:UIControlStateNormal];
     [info addTarget:self action:@selector(info:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -135,6 +137,15 @@ UIColor *currentTint() {
 - (NSArray *)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Queue" target:self];
+	}
+	return _specifiers;
+}
+@end
+
+@implementation OkapiTableListController
+- (NSArray *)specifiers {
+	if (!_specifiers) {
+		_specifiers = [self loadSpecifiersFromPlistName:@"TableViews" target:self];
 	}
 	return _specifiers;
 }

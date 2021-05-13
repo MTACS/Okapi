@@ -13,6 +13,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>OkapiSwitchCell</string>
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
@@ -23,6 +25,8 @@
 			<string>Hide Package Icons</string>
 			<key>PostNotification</key>
 			<string>com.mtac.okapi/preferences.changed</string>
+			<key>subtitle</key>
+			<string>Hides package icons in all views</string>
 		</dict>
 		<dict>
 			<key>cell</key>
