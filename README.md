@@ -1,4 +1,5 @@
 # Okapi
 Repo for Okapi
 
-Requires libsparkcolourpicker
+* Requires libsparkcolourpicker
+* Options inside Zebra's settings page

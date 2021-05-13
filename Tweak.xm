@@ -129,6 +129,7 @@ BOOL isNotched() {
 }
 %end
 
+<<<<<<< HEAD
 %hook ZBHomeTableViewController
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (%orig != NULL && hideDeviceID) {
@@ -150,6 +151,10 @@ BOOL isNotched() {
 
 %hook ZBSourceListViewController
 - (void)layoutNavigationButtons {
+=======
+%hook ZBSourceListTableViewController // Needs work, needs to be refreshed each time tableview refreshes, shouldn't carry title into child views
+- (void)layoutNavigationButtonsNormal {
+>>>>>>> 84abe6cb5d25f8200f61dadf506ccb72cc1d939d
     %orig;
     if (showSourceCount) {
         NSString *originalTitle = MSHookIvar<NSString *>(self.navigationItem, "_title");
@@ -172,6 +177,7 @@ BOOL isNotched() {
 }
 %end
 
+<<<<<<< HEAD
 %hook ZBSourceTableViewCell
 - (void)setStoreBadge:(UIImageView *)arg1 {
     arg1.image = [arg1.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]; // Force store badge color on Zebra 1.2-beta+
@@ -248,6 +254,9 @@ BOOL isNotched() {
 }
 %end
 %hook ZBPackageListTableViewController
+=======
+%hook ZBPackageListTableViewController // Needs work, needs to be refreshed each time tableview refreshes, shouldn't carry title into child views
+>>>>>>> 84abe6cb5d25f8200f61dadf506ccb72cc1d939d
 - (void)layoutNavigationButtonsNormal {
     %orig;
     if (showPackageCount) {
@@ -332,7 +341,11 @@ BOOL isNotched() {
         }
 
         self.queueButton = [[UIView alloc] init];
+<<<<<<< HEAD
         self.queueButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.height - self.tabBar.bounds.size.height - x, 60, 60);
+=======
+        self.queueButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.height - self.tabBar.bounds.size.height - 100, 60, 60); // Needs autolayout update
+>>>>>>> 84abe6cb5d25f8200f61dadf506ccb72cc1d939d
         self.queueButton.backgroundColor = [SparkColourPickerUtils colourWithString:[colorDictionary objectForKey:@"appTintColor"] withFallback:@"#667FFA"];
         self.queueButton.layer.cornerRadius = 30;
         self.queueButton.layer.masksToBounds = YES;
@@ -371,7 +384,7 @@ BOOL isNotched() {
 %hook ZBQueue
 - (void)clear {
     %orig;
-    ZBTabBarController *tabBar = (ZBTabBarController *)((ZBAppDelegate *)[[UIApplication sharedApplication] delegate]).window.rootViewController;
+    ZBTabBarController *tabBar = (ZBTabBarController *)((ZBAppDelegate *)[[UIApplication sharedApplication] delegate]).window.rootViewController; // Make sure to hide button when queue is cleared
     tabBar.queueButton.hidden = YES;
 }
 %end
