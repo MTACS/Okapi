@@ -12,6 +12,20 @@ BOOL isNotched() {
     return YES;
 }
 
+int getTabBarHeight() {
+    switch ((int)HEIGHT) {
+        case 667:
+            return HEIGHT - 120;
+        case 812:
+            return HEIGHT - 150;
+        case 844:
+            return HEIGHT - 150;
+        default:
+            return HEIGHT - 120;
+    }
+    return 100;
+}
+
 %group App
 %hook UITableView
 - (UIEdgeInsets)_sectionContentInset {
@@ -99,7 +113,7 @@ BOOL isNotched() {
 }
 %end
 
-%hook UITableViewCellContentView // Rather hacky, better to hook tableview datasource
+%hook UITableViewCellContentView // Better to hook tableview datasource
 - (void)setFrame:(CGRect)arg1 {
     if (([[self _viewControllerForAncestor] isKindOfClass:%c(ZBChangesTableViewController)] || [[self _viewControllerForAncestor] isKindOfClass:%c(ZBPackageListTableViewController)]) && hidePackageIcons) {
         arg1 = CGRectMake(arg1.origin.x - 60, arg1.origin.y, arg1.size.width + 60, arg1.size.height);
@@ -129,7 +143,7 @@ BOOL isNotched() {
 }
 %end
 
-<<<<<<< HEAD
+
 %hook ZBHomeTableViewController
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (%orig != NULL && hideDeviceID) {
@@ -151,10 +165,8 @@ BOOL isNotched() {
 
 %hook ZBSourceListViewController
 - (void)layoutNavigationButtons {
-=======
 %hook ZBSourceListTableViewController // Needs work, needs to be refreshed each time tableview refreshes, shouldn't carry title into child views
 - (void)layoutNavigationButtonsNormal {
->>>>>>> 84abe6cb5d25f8200f61dadf506ccb72cc1d939d
     %orig;
     if (showSourceCount) {
         NSString *originalTitle = MSHookIvar<NSString *>(self.navigationItem, "_title");
@@ -177,7 +189,6 @@ BOOL isNotched() {
 }
 %end
 
-<<<<<<< HEAD
 %hook ZBSourceTableViewCell
 - (void)setStoreBadge:(UIImageView *)arg1 {
     arg1.image = [arg1.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]; // Force store badge color on Zebra 1.2-beta+
@@ -254,9 +265,9 @@ BOOL isNotched() {
 }
 %end
 %hook ZBPackageListTableViewController
-=======
+
 %hook ZBPackageListTableViewController // Needs work, needs to be refreshed each time tableview refreshes, shouldn't carry title into child views
->>>>>>> 84abe6cb5d25f8200f61dadf506ccb72cc1d939d
+
 - (void)layoutNavigationButtonsNormal {
     %orig;
     if (showPackageCount) {
@@ -333,23 +344,19 @@ BOOL isNotched() {
     %orig;
     if (!self.queueButton) {
         NSMutableDictionary *colorDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapicolors.plist"];
-        int x;
-        if (isNotched()) {
-            x = 70;
-        } else {
-            x = 100;
-        }
-
         self.queueButton = [[UIView alloc] init];
-<<<<<<< HEAD
+
+        self.queueButton.frame = CGRectMake(WIDTH - 70, getTabBarHeight(), 60, 60);
+
         self.queueButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.height - self.tabBar.bounds.size.height - x, 60, 60);
-=======
+
         self.queueButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.height - self.tabBar.bounds.size.height - 100, 60, 60); // Needs autolayout update
->>>>>>> 84abe6cb5d25f8200f61dadf506ccb72cc1d939d
+
         self.queueButton.backgroundColor = [SparkColourPickerUtils colourWithString:[colorDictionary objectForKey:@"appTintColor"] withFallback:@"#667FFA"];
         self.queueButton.layer.cornerRadius = 30;
         self.queueButton.layer.masksToBounds = YES;
-        
+        self.queueButton.translatesAutoresizingMaskIntoConstraints = false;
+
         UIButton *openQueue = [UIButton buttonWithType:UIButtonTypeCustom];
         openQueue.frame = self.queueButton.bounds;
         openQueue.tintColor = [UIColor whiteColor];
@@ -360,7 +367,7 @@ BOOL isNotched() {
         [openQueue addTarget:self action:@selector(okapiOpenQueue:) forControlEvents:UIControlEventTouchUpInside];
         [self.queueButton addSubview:openQueue];
 
-        [self.view addSubview:self.queueButton];
+        [self.viewIfLoaded addSubview:self.queueButton];
         self.queueButton.hidden = YES;
     }
 }
@@ -391,7 +398,9 @@ BOOL isNotched() {
 %end
 
 static void notificationCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	NSNumber *enabledValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"enabled" inDomain:domain];
+	RLog(@"[+] OKAPI DEBUG: Callback");
+    
+    NSNumber *enabledValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"enabled" inDomain:domain];
 	enabled = (enabledValue) ? [enabledValue boolValue] : YES;
     NSNumber *useCustomTintColorValue = (NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"useCustomTintColor" inDomain:domain];
     useCustomTintColor = (useCustomTintColorValue) ? [useCustomTintColorValue boolValue] : NO;
@@ -429,7 +438,7 @@ static void notificationCallback(CFNotificationCenterRef center, void *observer,
     if (enabled) {
         NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
         NSString *actualVersion = [info objectForKey:@"CFBundleShortVersionString"];
-        NSString *requiredVersion = @"1.2";
+        NSString *requiredVersion = @"1.2~beta";
         if ([requiredVersion compare:actualVersion options:NSNumericSearch] == NSOrderedDescending) {
             %init(Stable);
         } else {

@@ -1,6 +1,6 @@
 Package: com.mtac.okapi
 Name: Okapi
-Version: 2.2
+Version: 2.3
 Architecture: iphoneos-arm
 Description: A slighly better Zebra
 Maintainer: MTAC

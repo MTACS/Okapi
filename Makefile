@@ -1,5 +1,5 @@
-THEOS_DEVICE_IP = 192.168.1.41
 TARGET := iphone:clang:latest:13.0
+SYSROOT = $(THEOS)/sdks/iPhoneOS14.2.sdk
 INSTALL_TARGET_PROCESSES = Zebra
 ARCHS = arm64 arm64e
 DEBUG = 1
