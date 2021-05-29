@@ -1,6 +1,5 @@
 #import "./okapiprefs/OkapiRootListController.h"
 #import "SparkColourPickerUtils.h"
-#include <RemoteLog.h>
 
 #define CURRENT_TINT [[UIApplication sharedApplication] keyWindow].tintColor
 #define HEIGHT [UIScreen mainScreen].bounds.size.height
