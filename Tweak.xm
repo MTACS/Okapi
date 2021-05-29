@@ -143,7 +143,6 @@ int getTabBarHeight() {
 }
 %end
 
-
 %hook ZBHomeTableViewController
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (%orig != NULL && hideDeviceID) {
@@ -165,8 +164,6 @@ int getTabBarHeight() {
 
 %hook ZBSourceListViewController
 - (void)layoutNavigationButtons {
-%hook ZBSourceListTableViewController // Needs work, needs to be refreshed each time tableview refreshes, shouldn't carry title into child views
-- (void)layoutNavigationButtonsNormal {
     %orig;
     if (showSourceCount) {
         NSString *originalTitle = MSHookIvar<NSString *>(self.navigationItem, "_title");
@@ -265,9 +262,6 @@ int getTabBarHeight() {
 }
 %end
 %hook ZBPackageListTableViewController
-
-%hook ZBPackageListTableViewController // Needs work, needs to be refreshed each time tableview refreshes, shouldn't carry title into child views
-
 - (void)layoutNavigationButtonsNormal {
     %orig;
     if (showPackageCount) {
@@ -345,13 +339,7 @@ int getTabBarHeight() {
     if (!self.queueButton) {
         NSMutableDictionary *colorDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.mtac.okapicolors.plist"];
         self.queueButton = [[UIView alloc] init];
-
         self.queueButton.frame = CGRectMake(WIDTH - 70, getTabBarHeight(), 60, 60);
-
-        self.queueButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.height - self.tabBar.bounds.size.height - x, 60, 60);
-
-        self.queueButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.height - self.tabBar.bounds.size.height - 100, 60, 60); // Needs autolayout update
-
         self.queueButton.backgroundColor = [SparkColourPickerUtils colourWithString:[colorDictionary objectForKey:@"appTintColor"] withFallback:@"#667FFA"];
         self.queueButton.layer.cornerRadius = 30;
         self.queueButton.layer.masksToBounds = YES;
@@ -391,7 +379,7 @@ int getTabBarHeight() {
 %hook ZBQueue
 - (void)clear {
     %orig;
-    ZBTabBarController *tabBar = (ZBTabBarController *)((ZBAppDelegate *)[[UIApplication sharedApplication] delegate]).window.rootViewController; // Make sure to hide button when queue is cleared
+    ZBTabBarController *tabBar = (ZBTabBarController *)((ZBAppDelegate *)[[UIApplication sharedApplication] delegate]).window.rootViewController;
     tabBar.queueButton.hidden = YES;
 }
 %end
