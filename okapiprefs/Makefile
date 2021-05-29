@@ -1,5 +1,5 @@
 TARGET := iphone:clang:latest:13.0
-
+SYSROOT = $(THEOS)/sdks/iPhoneOS14.2.sdk
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = OkapiPrefs
